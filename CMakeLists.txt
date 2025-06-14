@@ -29,14 +29,7 @@ else()
     message(STATUS "systemd support: disabled (ENABLE_SYSTEMD=OFF)")
 endif()
 
-# Create config header
-configure_file(
-    ${CMAKE_SOURCE_DIR}/src/config.h.in
-    ${CMAKE_BINARY_DIR}/config_build.h
-)
-
 include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(${CMAKE_BINARY_DIR})
 
 # Main executable sources
 set(SOURCES
