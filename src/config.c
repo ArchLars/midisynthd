@@ -51,15 +51,7 @@
 #define CONFIG_MAX_SOUNDFONTS 8
 #define CONFIG_MAX_LINE_LEN 1024
 
-/* Audio driver names array (referenced in main.c) */
-const char *audio_driver_names[] = {
-    "auto",
-    "jack",
-    "pipewire", 
-    "pulseaudio",
-    "alsa",
-    NULL
-};
+
 
 /**
  * Trim whitespace from the beginning and end of a string

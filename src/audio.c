@@ -33,11 +33,13 @@
 #include <fluidsynth.h>
 
 /* Audio driver names array for logging and user feedback */
-const char *audio_driver_names[AUDIO_DRIVER_COUNT] = {
+const char *const audio_driver_names[AUDIO_DRIVER_COUNT] = {
+    "auto",
     "jack",
-    "pipewire", 
+    "pipewire",
     "pulseaudio",
-    "alsa"
+    "alsa",
+    "file"
 };
 
 /* Audio subsystem structure */
@@ -182,8 +184,8 @@ static int configure_audio_settings(fluid_settings_t *settings, audio_driver_t d
     }
     
     /* Set number of audio buffers */
-    if (fluid_settings_setint(settings, "audio.periods", config->buffer_count) != FLUID_OK) {
-        syslog(LOG_WARNING, "Failed to set buffer count to %d", config->buffer_count);
+    if (fluid_settings_setint(settings, "audio.periods", config->audio_periods) != FLUID_OK) {
+        syslog(LOG_WARNING, "Failed to set buffer count to %d", config->audio_periods);
     }
     
     /* Set real-time priority if enabled */
@@ -227,12 +229,7 @@ static int configure_audio_settings(fluid_settings_t *settings, audio_driver_t d
             break;
             
         case AUDIO_DRIVER_ALSA:
-            /* ALSA-specific settings */
-            if (strlen(config->alsa_device) > 0) {
-                if (fluid_settings_setstr(settings, "audio.alsa.device", config->alsa_device) != FLUID_OK) {
-                    syslog(LOG_WARNING, "Failed to set ALSA device to %s", config->alsa_device);
-                }
-            }
+            /* ALSA-specific settings - using default device */
             break;
             
         default:
@@ -307,7 +304,7 @@ audio_t *audio_init(const midisynthd_config_t *config) {
     syslog(LOG_INFO, "Audio subsystem initialized successfully using %s driver", 
            audio_driver_names[audio->driver_type]);
     syslog(LOG_INFO, "Audio settings: %d Hz, %d-frame buffer, %d buffers", 
-           config->sample_rate, config->buffer_size, config->buffer_count);
+           config->sample_rate, config->buffer_size, config->audio_periods);
     
     return audio;
     

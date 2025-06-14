@@ -25,6 +25,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#include "audio.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -58,16 +60,6 @@ typedef enum {
     LOG_LEVEL_DEBUG = 3
 } log_level_t;
 
-/* Audio driver types */
-typedef enum {
-    AUDIO_DRIVER_AUTO = 0,
-    AUDIO_DRIVER_JACK,
-    AUDIO_DRIVER_PIPEWIRE,
-    AUDIO_DRIVER_PULSEAUDIO,
-    AUDIO_DRIVER_ALSA,
-    AUDIO_DRIVER_COUNT
-} audio_driver_t;
-
 /* MIDI driver types */
 typedef enum {
     MIDI_DRIVER_ALSA_SEQ = 0,
@@ -76,7 +68,6 @@ typedef enum {
 } midi_driver_t;
 
 /* Audio driver names for display and configuration */
-extern const char *audio_driver_names[AUDIO_DRIVER_COUNT];
 extern const char *midi_driver_names[MIDI_DRIVER_COUNT];
 
 /* SoundFont configuration */
