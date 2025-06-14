@@ -1,0 +1,11 @@
+[Unit]
+Description=MidiSynth Daemon (User)
+After=default.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/midisynthd
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

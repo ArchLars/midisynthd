@@ -23,6 +23,8 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <fluidsynth.h>
+#include <alsa/asoundlib.h>
 
 /* Forward declarations */
 typedef struct synth_s synth_t;
@@ -373,5 +375,15 @@ int synth_get_polyphony(synth_t *synth);
  * @return True if ready for operation, false otherwise
  */
 bool synth_is_ready(synth_t *synth);
+
+/**
+ * Get the FluidSynth settings object used by the synthesizer
+ */
+fluid_settings_t *synth_get_settings(synth_t *synth);
+
+/**
+ * Handle an ALSA sequencer MIDI event
+ */
+int synth_handle_midi_event(synth_t *synth, snd_seq_event_t *ev);
 
 #endif /* MIDISYNTHD_SYNTH_H */
