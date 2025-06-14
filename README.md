@@ -75,7 +75,7 @@ midisynthd/
 │   └── config.c/h   # Configuration handling
 ├── systemd/         # Service unit files
 ├── config/          # Default configurations  
-├── tests/           # Unit tests
+└── tests/           # Unit tests
 ```
 
 ### Signal Flow
