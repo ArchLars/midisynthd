@@ -14,8 +14,52 @@ find_library(MATH_LIB m)
 find_library(RT_LIB rt)
 find_package(Threads REQUIRED)
 
+# Check for systemd (optional)
+pkg_check_modules(SYSTEMD libsystemd)
+if(SYSTEMD_FOUND)
+    add_definitions(-DHAVE_SYSTEMD)
+endif()
+
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
+# Main executable sources
+set(SOURCES
+    src/main.c
+    src/config.c
+    src/synth.c
+    src/audio.c
+    src/midi_alsa.c
+    src/daemonize.c
+)
+
+# Create main executable
+add_executable(midisynthd ${SOURCES})
+
+target_include_directories(midisynthd PRIVATE
+    ${FLUIDSYNTH_INCLUDE_DIRS}
+    ${ALSA_INCLUDE_DIRS}
+)
+
+target_link_libraries(midisynthd
+    ${FLUIDSYNTH_LIBRARIES}
+    ${ALSA_LIBRARIES}
+    ${MATH_LIB}
+    ${RT_LIB}
+    Threads::Threads
+)
+
+if(SYSTEMD_FOUND)
+    target_link_libraries(midisynthd ${SYSTEMD_LIBRARIES})
+endif()
+
+# Installation
+install(TARGETS midisynthd
+    RUNTIME DESTINATION bin
+)
+
+install(FILES config/midisynthd.conf
+    DESTINATION /etc
+)
 
 if(ENABLE_TESTS)
     enable_testing()
