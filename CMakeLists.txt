@@ -6,7 +6,7 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 option(ENABLE_TESTS "Build unit tests" ON)
-option(ENABLE_SYSTEMD "Enable systemd integration" ON)
+option(ENABLE_SYSTEMD "Enable systemd integration" OFF)
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(FLUIDSYNTH REQUIRED fluidsynth)
