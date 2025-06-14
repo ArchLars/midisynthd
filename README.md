@@ -308,6 +308,15 @@ For real-time priority, add your user to the `audio` group:
 sudo usermod -a -G audio $USER
 ```
 
+#### Stuck Notes After Abort
+If a MIDI player stops unexpectedly (for example when killed with `SIGKILL`),
+lingering notes may continue to sound. The daemon reacts to `SIGUSR2` by
+sending an *All Notes Off* message. Silence any stuck tones with:
+
+```bash
+killall -USR2 midisynthd
+```
+
 ## 🛠️ Development
 
 ### Building for Development

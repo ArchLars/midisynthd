@@ -164,6 +164,16 @@ static void signal_handler(int sig) {
             }
             /* TODO: Print status to log */
             break;
+        case SIGUSR2:
+            if (g_config.log_level >= LOG_LEVEL_INFO) {
+                syslog(LOG_INFO, "Received SIGUSR2, sending All Notes Off");
+            }
+            if (g_midi) {
+                midi_alsa_disconnect_all(g_midi);
+            } else if (g_synth) {
+                synth_all_notes_off(g_synth);
+            }
+            break;
         default:
             syslog(LOG_WARNING, "Received unexpected signal %d", sig);
             break;
@@ -186,7 +196,8 @@ static int setup_signals(void) {
     if (sigaction(SIGTERM, &sa, NULL) < 0 ||
         sigaction(SIGINT, &sa, NULL) < 0 ||
         sigaction(SIGHUP, &sa, NULL) < 0 ||
-        sigaction(SIGUSR1, &sa, NULL) < 0) {
+        sigaction(SIGUSR1, &sa, NULL) < 0 ||
+        sigaction(SIGUSR2, &sa, NULL) < 0) {
         syslog(LOG_ERR, "Failed to setup signal handlers: %s", strerror(errno));
         return -1;
     }
