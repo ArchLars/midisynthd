@@ -1,7 +1,7 @@
 <table>
   <tr align="center">
     <td>
-      <img src="logo.png" alt="midisynthd logo" width="107" height="115" />
+      <img src="logo.png" alt="midisynthd logo" width="250" />
     </td>
     <td>
       <h1 style="margin:0;">midisynthd</h1>
