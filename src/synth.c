@@ -61,8 +61,6 @@ static const char* fluidsynth_driver_names[] = {
  * Default soundfont search paths
  */
 static const char* default_soundfont_paths[] = {
-    "/usr/share/soundfonts/FluidR3_GM_GS.sf2",
-    "/usr/share/sounds/sf2/FluidR3_GM_GS.sf2",
     "/usr/share/soundfonts/FluidR3_GM.sf2",
     "/usr/share/sounds/sf2/FluidR3_GM.sf2",
     "/usr/share/soundfonts/default.sf2",

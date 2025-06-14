@@ -49,7 +49,7 @@ The development will proceed in sequential steps, addressing core functionality 
    * **Technologies & Libraries:** Implement a configuration system using the chosen config library (e.g. libconfig for a `.conf` file with INI/CFG style, or json-c for JSON). Provide a default config file installed in `/etc` (system-wide defaults) and allow an override config in the user’s home (e.g. `~/.config/midisynthd.conf`). The daemon will parse both: first load global config, then load user config (if present) to override specific settings. Key settings include **SoundFont path(s)**, **MIDI/Audio driver preferences**, and synth parameters like **gain** (master volume), **polyphony** (max voices), **channels**, **default sample rate**, **midi.autoconnect toggle**, etc. We might use a simple structure like INI sections or key-value pairs. For example, a config might have:
 
      ```
-     soundfont = "/usr/share/soundfonts/FluidR3_GM_GS.sf2"  
+     soundfont = "/usr/share/soundfonts/FluidR3_GM.sf2"
      gain = 0.5  
      polyphony = 256  
      audio_driver = "pipewire"    # default audio driver preference  

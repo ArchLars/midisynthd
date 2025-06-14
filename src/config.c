@@ -178,9 +178,9 @@ void config_init_defaults(midisynthd_config_t *config) {
     config->soundfont_count = 0;
     const char *default_soundfonts[] = {
         CONFIG_DEFAULT_SOUNDFONT_PATH,
-        "/usr/share/soundfonts/FluidR3_GM_GS.sf2",
+        "/usr/share/soundfonts/FluidR3_GM.sf2",
         "/usr/share/soundfonts/GeneralUser_GS.sf2",
-        "/usr/share/sounds/sf2/FluidR3_GM_GS.sf2",
+        "/usr/share/sounds/sf2/FluidR3_GM.sf2",
         "/usr/share/sounds/sf2/GeneralUser_GS.sf2",
         NULL
     };
@@ -596,8 +596,8 @@ bool config_find_default_soundfont(char *found_path, size_t path_len) {
     if (!found_path || path_len == 0) return false;
     const char *defaults[] = {
         CONFIG_DEFAULT_SOUNDFONT_PATH,
-        "/usr/share/soundfonts/FluidR3_GM_GS.sf2",
-        "/usr/share/sounds/sf2/FluidR3_GM_GS.sf2",
+        "/usr/share/soundfonts/FluidR3_GM.sf2",
+        "/usr/share/sounds/sf2/FluidR3_GM.sf2",
         NULL
     };
     for (int i = 0; defaults[i]; i++) {

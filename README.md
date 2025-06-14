@@ -37,7 +37,7 @@
   - ALSA (libasound2)
   - systemd (optional, for service integration)
 - **Runtime**:
-  - General MIDI SoundFont (e.g., FluidR3_GM_GS.sf2)
+  - General MIDI SoundFont (e.g., FluidR3_GM.sf2)
 
 For Debian/Ubuntu systems, install the build requirements with:
 
@@ -211,13 +211,21 @@ midisynthd uses a cascading configuration system:
 2. **Per-user**: `~/.config/midisynthd.conf` (overrides system settings)
 3. **Built-in defaults**: Used when no config files exist
 
+The default configuration expects the FluidR3 GM SoundFont at
+`/usr/share/sounds/sf2/FluidR3_GM.sf2`. Install it from your distribution's
+package repositories or change the `soundfont` path:
+
+- **Debian/Ubuntu**: `fluid-soundfont-gm`
+- **Fedora/RHEL**: `fluid-soundfont`
+- **Arch Linux**: `soundfont-fluid`
+
 ### Multiple SoundFonts
 
 Load multiple SoundFonts for layered sounds:
 
 ```ini
 # Primary General MIDI SoundFont
-soundfont = /usr/share/soundfonts/FluidR3_GM_GS.sf2
+soundfont = /usr/share/soundfonts/FluidR3_GM.sf2
 
 # Additional SoundFonts (stacked)
 soundfont = /home/user/soundfonts/strings.sf2
