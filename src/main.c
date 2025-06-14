@@ -461,10 +461,9 @@ static int main_loop(void) {
            g_config.midi_autoconnect ? "enabled" : "disabled");
     
 #ifdef HAVE_SYSTEMD
-    /* Notify systemd that we're ready to accept connections */
-    sd_notifyf(0, "READY=1\n"
-                  "STATUS=Processing MIDI events\n"
-                  "MAINPID=%lu", (unsigned long) getpid());
+    /* Notify systemd that the service is ready */
+    daemon_notify_ready();
+    daemon_notify_status("Processing MIDI events");
 #endif
     
     /* Main event loop */
@@ -487,8 +486,7 @@ static int main_loop(void) {
     
 #ifdef HAVE_SYSTEMD
     /* Notify systemd that we're stopping */
-    sd_notifyf(0, "STOPPING=1\n"
-                  "STATUS=Shutting down gracefully");
+    daemon_notify_status("Shutting down gracefully");
 #endif
     
     syslog(LOG_INFO, "%s shutting down", PACKAGE_NAME);
