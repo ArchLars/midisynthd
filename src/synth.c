@@ -96,15 +96,22 @@ static const char* find_available_soundfont(void) {
  */
 static int setup_fluidsynth_settings(synth_t *synth) {
     const midisynthd_config_t *config = synth->config;
-    
-    /* Set audio driver */
-    const char *driver_name = "auto";
-    if (config->audio_driver < AUDIO_DRIVER_COUNT) {
-        driver_name = fluidsynth_driver_names[config->audio_driver];
+
+    /* Determine which audio driver FluidSynth should use */
+    audio_driver_t driver = config->audio_driver;
+    if (synth->audio && audio_is_initialized(synth->audio)) {
+        driver = audio_get_driver_type(synth->audio);
     }
-    
+    if (driver == AUDIO_DRIVER_AUTO) {
+        driver = AUDIO_DRIVER_ALSA; /* sane fallback */
+    }
+
+    const char *driver_name = (driver < AUDIO_DRIVER_COUNT)
+                                  ? fluidsynth_driver_names[driver]
+                                  : "alsa";
+
     if (fluid_settings_setstr(synth->settings, "audio.driver", driver_name) != FLUID_OK) {
-        syslog(LOG_WARNING, "Failed to set audio driver to '%s', using auto", driver_name);
+        syslog(LOG_WARNING, "Failed to set audio driver to '%s'", driver_name);
     } else {
         syslog(LOG_DEBUG, "Set FluidSynth audio driver to '%s'", driver_name);
     }
@@ -146,7 +153,7 @@ static int setup_fluidsynth_settings(synth_t *synth) {
     
     /* Enable real-time priority if configured */
     if (config->realtime_priority) {
-        if (fluid_settings_setstr(synth->settings, "audio.realtime-prio", "yes") != FLUID_OK) {
+        if (fluid_settings_setint(synth->settings, "audio.realtime-prio", 1) != FLUID_OK) {
             syslog(LOG_WARNING, "Failed to enable real-time priority");
         } else {
             syslog(LOG_DEBUG, "Enabled real-time priority");
@@ -162,7 +169,7 @@ static int setup_fluidsynth_settings(synth_t *synth) {
         }
         
         /* Enable JACK auto-connect by default */
-        if (fluid_settings_setstr(synth->settings, "audio.jack.autoconnect", "yes") != FLUID_OK) {
+        if (fluid_settings_setint(synth->settings, "audio.jack.autoconnect", 1) != FLUID_OK) {
             syslog(LOG_WARNING, "Failed to enable JACK auto-connect");
         } else {
             syslog(LOG_DEBUG, "Enabled JACK auto-connect");
