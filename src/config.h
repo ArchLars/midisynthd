@@ -32,7 +32,7 @@ extern "C" {
 /* Configuration file paths */
 #define CONFIG_SYSTEM_PATH          "/etc/midisynthd.conf"
 #define CONFIG_USER_PATH            "/.config/midisynthd.conf"
-#define CONFIG_DEFAULT_SOUNDFONT_PATH "/usr/share/sounds/sf2/FluidR3_GM_GS.sf2"
+#define CONFIG_DEFAULT_SOUNDFONT_PATH "/usr/share/sounds/sf2/FluidR3_GM.sf2"
 
 /* Default values */
 #define CONFIG_DEFAULT_CLIENT_NAME   "MidiSynth Daemon"
