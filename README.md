@@ -6,6 +6,7 @@ This design outlines a system-level MIDI synthesizer daemon for Linux – an equ
 
 Below is the proposed GitHub repository structure for the project (tentatively named `midisynthd`), with directories and key files. Each major file is annotated with a one-line description of its purpose:
 
+```
 midisynthd/                     // Project root directory
 ├── README.md                  // Project overview, build instructions, and usage
 ├── LICENSE                    // License information (e.g. MIT or GPL)
@@ -42,7 +43,7 @@ midisynthd/                     // Project root directory
 │   └── CMakeLists.txt         // Build configuration for tests (if using CMake and CTest)
 └── .github/workflows/
     └── ci-build.yml           // CI pipeline (build, run unit tests, packaging checks on each push)
-
+```
 
 (Each source file above represents a logical module of the daemon: `main.c` initializes the service, `synth.c` wraps FluidSynth functionality, `midi_alsa.c` handles ALSA sequencer I/O, etc. The configuration and systemd directories provide integration with the OS environment, and the tests directory ensures each component works correctly.)
 
