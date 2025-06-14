@@ -375,13 +375,12 @@ This project is licensed under the GNU Lesser General Public License v2.1 - see 
 
 ## Notes
 
-I wrote this for myself and cleaned it up for publication with AI. That's partly why I made a decision on the soundfont side of things. You can always compile it without that if you'd like. I decided to release this publicly because maybe someone would get some use out of it? I cannot guarantee it will ALWAYS work. It should, but mileage may wary. I'd personally prefer if you forked and added your own patches for yourself instead of contributing, thanks!
+I wrote this for myself and cleaned it up for publication with AI. That's partly why I made a decision on the soundfont side of things. You can always compile it without that if you'd like. I decided to release this publicly because maybe someone would get some use out of it? I cannot guarantee it will ALWAYS work. It should, but mileage may wary. I'd personally prefer if you forked and added your own patches for yourself instead of asking to contribute. I appreciate it, but I don't really have the time rn, sorry.
 
 ## 🔗 Links
 
 - [Homepage](https://github.com/ArchLars/midisynthd)
 - [Issue Tracker](https://github.com/ArchLars/midisynthd/issues)
-- [Wiki](https://github.com/ArchLars/midisynthd/wiki)
 - [Releases](https://github.com/ArchLars/midisynthd/releases)
 
 ---
