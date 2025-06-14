@@ -174,15 +174,15 @@ Check that the MIDI port is available:
 aconnect -l
 
 # You should see something like:
-# client 128: 'MidiSynth Daemon' [type=user,pid=12345]
-#     0 'Synth input port'
+# client 128: 'FLUID Synth (MidiSynth Daemon)' [type=user,pid=12345]
+#     0 'Synth input port (MidiSynth Daemon:0)'
 ```
 
 ### Play a MIDI File
 
 ```bash
-# Using aplaymidi
-aplaymidi -p "MidiSynth Daemon" song.mid
+# Using aplaymidi (replace 128:0 with the port from `aconnect -l`)
+aplaymidi -p 128:0 song.mid
 
 # Using pmidi
 pmidi -p 128:0 song.mid
@@ -197,8 +197,8 @@ timidity -Os song.mid
 # List available MIDI inputs
 aconnect -i
 
-# Connect your keyboard (example: port 24:0) to midisynthd
-aconnect 24:0 "MidiSynth Daemon"
+# Connect your keyboard (example: port 24:0) to midisynthd (replace 128:0 with your synth port)
+aconnect 24:0 128:0
 ```
 
 ## ⚙️ Configuration
@@ -288,16 +288,16 @@ midisynthd --soundfont /path/to/CustomGM.sf2
 #### LMMS
 1. Go to Edit → Settings → MIDI
 2. Select "ALSA-Sequencer" as MIDI interface
-3. The MidiSynth Daemon will appear in available outputs
+3. The port "FLUID Synth (MidiSynth Daemon)" will appear in available outputs
 
 #### Rosegarden
 1. Go to Studio → Manage MIDI Devices
-2. MidiSynth Daemon appears as an available MIDI output
+2. The port "FLUID Synth (MidiSynth Daemon)" appears as an available MIDI output
 3. Assign tracks to use it
 
 #### REAPER
 1. Options → Preferences → MIDI Devices
-2. Enable "MidiSynth Daemon" in MIDI outputs
+2. Enable "FLUID Synth (MidiSynth Daemon)" in MIDI outputs
 3. Route tracks to the synthesizer
 
 #### Command Line Tools
@@ -306,10 +306,10 @@ midisynthd --soundfont /path/to/CustomGM.sf2
 wildmidi -A song.mid
 
 # Real-time MIDI routing
-aconnect "USB MIDI Keyboard" "MidiSynth Daemon"
+aconnect "USB MIDI Keyboard" 128:0
 
 # MIDI monitoring
-aseqdump -p "MidiSynth Daemon"
+aseqdump -p 128:0
 ```
 
 ### Troubleshooting
