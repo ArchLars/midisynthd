@@ -29,8 +29,10 @@ extern "C" {
 #include <stdint.h>
 
 /* Forward declarations */
-typedef struct midisynthd_config midisynthd_config_t;
-typedef struct audio audio_t;
+struct midisynthd_config_t;
+typedef struct midisynthd_config_t midisynthd_config_t;
+struct audio_s;
+typedef struct audio_s audio_t;
 
 /**
  * Audio driver types supported by the daemon
