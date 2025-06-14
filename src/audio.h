@@ -27,6 +27,7 @@ extern "C" {
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <fluidsynth.h>
 #include "config.h"
 
 /* Forward declarations */
@@ -146,6 +147,32 @@ audio_driver_t audio_detect_best_driver(void);
  * @return 0 on success, -1 on error
  */
 int audio_get_stats(const audio_t *audio, audio_stats_t *stats);
+
+/**
+ * Retrieve the FluidSynth settings instance used by the audio system
+ *
+ * @param audio Audio context
+ * @return FluidSynth settings pointer or NULL if not initialized
+ */
+fluid_settings_t *audio_get_settings(audio_t *audio);
+
+/**
+ * Get the currently active audio driver type
+ *
+ * @param audio Audio context
+ * @return Driver type enum value
+ */
+audio_driver_t audio_get_driver_type(audio_t *audio);
+
+/**
+ * Get a human readable name for the active driver
+ */
+const char *audio_get_driver_name(audio_t *audio);
+
+/**
+ * Determine whether the audio subsystem has been initialized
+ */
+bool audio_is_initialized(audio_t *audio);
 
 /**
  * Set audio gain/volume
