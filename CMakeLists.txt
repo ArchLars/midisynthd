@@ -6,6 +6,7 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 option(ENABLE_TESTS "Build unit tests" ON)
+option(ENABLE_SYSTEMD "Enable systemd integration" ON)
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(FLUIDSYNTH REQUIRED fluidsynth)
@@ -15,12 +16,27 @@ find_library(RT_LIB rt)
 find_package(Threads REQUIRED)
 
 # Check for systemd (optional)
-pkg_check_modules(SYSTEMD libsystemd)
-if(SYSTEMD_FOUND)
-    add_definitions(-DHAVE_SYSTEMD)
+set(HAVE_SYSTEMD 0)
+if(ENABLE_SYSTEMD)
+    pkg_check_modules(SYSTEMD libsystemd)
+    if(SYSTEMD_FOUND)
+        set(HAVE_SYSTEMD 1)
+        message(STATUS "systemd support: enabled")
+    else()
+        message(STATUS "systemd support: disabled (libsystemd not found)")
+    endif()
+else()
+    message(STATUS "systemd support: disabled (ENABLE_SYSTEMD=OFF)")
 endif()
 
+# Create config header
+configure_file(
+    ${CMAKE_SOURCE_DIR}/src/config.h.in
+    ${CMAKE_BINARY_DIR}/config_build.h
+)
+
 include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_BINARY_DIR})
 
 # Main executable sources
 set(SOURCES
@@ -48,9 +64,13 @@ target_link_libraries(midisynthd
     Threads::Threads
 )
 
-if(SYSTEMD_FOUND)
+if(HAVE_SYSTEMD)
     target_link_libraries(midisynthd ${SYSTEMD_LIBRARIES})
+    target_include_directories(midisynthd PRIVATE ${SYSTEMD_INCLUDE_DIRS})
 endif()
+
+# Define HAVE_SYSTEMD for the source code
+target_compile_definitions(midisynthd PRIVATE HAVE_SYSTEMD=${HAVE_SYSTEMD})
 
 # Installation
 install(TARGETS midisynthd
@@ -58,7 +78,7 @@ install(TARGETS midisynthd
 )
 
 install(FILES config/midisynthd.conf
-    DESTINATION /etc
+    DESTINATION etc
 )
 
 if(ENABLE_TESTS)
