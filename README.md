@@ -62,62 +62,42 @@ midisynthd/
 ```
 
 ### Signal Flow
+
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        INPUT SOURCES                             │
-├─────────────────┬────────────────┬──────────────────────────────┤
-│  MIDI Keyboard  │  MIDI Files    │  Other MIDI Applications    │
-│  (Hardware)     │  (aplaymidi)   │  (DAWs, Sequencers)         │
-└────────┬────────┴───────┬────────┴────────────┬─────────────────┘
-         │                │                     │
-         └────────────────┴─────────────────────┘
-                          │
-                          ▼
-         ┌────────────────────────────────┐
-         │     ALSA Sequencer Layer       │
-         │   (Linux MIDI Infrastructure)  │
-         └────────────────────────────────┘
-                          │
-                          ▼
-╔═══════════════════════════════════════════════════════════════════╗
-║                      midisynthd                                    ║
-╟────────────────────────────────────────────────────────────────────╢
-║  ┌─────────────────┐        ┌──────────────────┐                 ║
-║  │   main.c        │        │   config.c/h     │                 ║
-║  │  - Entry point  │◄───────┤  - Load configs  │                 ║
-║  │  - Signal mgmt  │        │  - Validate      │                 ║
-║  │  - Event loop   │        └──────────────────┘                 ║
-║  └────────┬────────┘                                              ║
-║           │                                                        ║
-║           ▼                                                        ║
-║  ┌─────────────────┐        ┌──────────────────┐                 ║
-║  │  midi_alsa.c/h  │        │   synth.c/h      │                 ║
-║  │  - MIDI input   │───────►│  - FluidSynth    │                 ║
-║  │  - ALSA client  │        │  - Note handling │                 ║
-║  │  - Event routing│        │  - Soundfont mgmt│                 ║
-║  └─────────────────┘        └────────┬─────────┘                 ║
-║                                      │                            ║
-║                                      ▼                            ║
-║                            ┌──────────────────┐                   ║
-║                            │   audio.c/h      │                   ║
-║                            │  - Driver detect │                   ║
-║                            │  - Audio output  │                   ║
-║                            └────────┬─────────┘                   ║
-╚════════════════════════════════════╪═════════════════════════════╝
-                                     │
-                          ┌──────────┴───────────┐
-                          ▼                      ▼
-         ┌────────────────────────┐  ┌────────────────────────┐
-         │   PipeWire/PulseAudio  │  │        JACK            │
-         │   (Desktop Audio)      │  │   (Pro Audio)          │
-         └────────────┬───────────┘  └───────────┬────────────┘
-                      │                           │
-                      └───────────┬───────────────┘
-                                  ▼
-                        ┌─────────────────────┐
-                        │   Audio Hardware    │
-                        │   (Speakers/Phones) │
-                        └─────────────────────┘
+flowchart TB
+    subgraph INPUT_SOURCES["Input Sources"]
+        KB[MIDI Keyboard (Hardware)]
+        MF[MIDI Files (aplaymidi)]
+        OMA[Other MIDI Applications (DAWs, Sequencers)]
+    end
+
+    subgraph ALSA["ALSA Sequencer Layer\n(Linux MIDI Infrastructure)"]
+    end
+
+    KB --> ALSA
+    MF --> ALSA
+    OMA --> ALSA
+
+    ALSA --> MS[midisynthd]
+
+    subgraph MS_CONTENT["midisynthd"]
+        direction LR
+        MC[main.c\n- Entry point\n- Signal mgmt\n- Event loop]
+        CC[config.c/h\n- Load configs\n- Validate]
+        MAC[midi_alsa.c/h\n- MIDI input\n- ALSA client\n- Event routing]
+        SC[synth.c/h\n- FluidSynth\n- Note handling\n- Soundfont mgmt]
+        AC[audio.c/h\n- Driver detect\n- Audio output]
+
+        MC --- CC
+        MC --- MAC
+        MAC --> SC
+        SC --> AC
+    end
+
+    MS --> PP[PipeWire/PulseAudio (Desktop Audio)]
+    MS --> JACK[JACK (Pro Audio)]
+    PP --> AH[Audio Hardware (Speakers/Phones)]
+    JACK --> AH[Audio Hardware (Speakers/Phones)]
 ```
 
 #### Build Steps
