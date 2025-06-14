@@ -31,15 +31,7 @@
 #include <sys/un.h>
 #include <fluidsynth.h>
 
-/* Audio driver names array definition */
-const char* const audio_driver_names[AUDIO_DRIVER_COUNT] = {
-    "auto",
-    "jack",
-    "pipewire", 
-    "pulseaudio",
-    "alsa",
-    "file"
-};
+/* Audio driver names are defined in config.c */
 
 /* Audio subsystem structure */
 struct audio_s {

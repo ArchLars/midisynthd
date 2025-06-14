@@ -27,6 +27,7 @@ extern "C" {
 
 #include <stdbool.h>
 #include <stdint.h>
+#include "config.h"
 
 /* Forward declarations */
 struct midisynthd_config_t;
@@ -34,26 +35,7 @@ typedef struct midisynthd_config_t midisynthd_config_t;
 struct audio_s;
 typedef struct audio_s audio_t;
 
-/**
- * Audio driver types supported by the daemon
- * These correspond to FluidSynth's audio driver capabilities
- * Order reflects detection/preference priority
- */
-typedef enum {
-    AUDIO_DRIVER_AUTO = 0,      /* Automatic detection based on system */
-    AUDIO_DRIVER_JACK,          /* JACK Audio Connection Kit */
-    AUDIO_DRIVER_PIPEWIRE,      /* PipeWire audio server */
-    AUDIO_DRIVER_PULSEAUDIO,    /* PulseAudio sound server */
-    AUDIO_DRIVER_ALSA,          /* Raw ALSA (fallback) */
-    AUDIO_DRIVER_FILE,          /* File output (for testing/recording) */
-    AUDIO_DRIVER_COUNT          /* Number of audio drivers */
-} audio_driver_t;
-
-/**
- * Audio driver names for display and configuration
- * Maps to audio_driver_t enum values
- */
-extern const char* const audio_driver_names[AUDIO_DRIVER_COUNT];
+/* Audio driver type comes from config.h */
 
 /**
  * Audio buffer size presets for different use cases

@@ -462,9 +462,9 @@ static int main_loop(void) {
     
 #ifdef HAVE_SYSTEMD
     /* Notify systemd that we're ready to accept connections */
-    sd_notify(0, "READY=1\n"
-                 "STATUS=Processing MIDI events\n"
-                 "MAINPID=%lu", (unsigned long) getpid());
+    sd_notifyf(0, "READY=1\n"
+                  "STATUS=Processing MIDI events\n"
+                  "MAINPID=%lu", (unsigned long) getpid());
 #endif
     
     /* Main event loop */
@@ -487,8 +487,8 @@ static int main_loop(void) {
     
 #ifdef HAVE_SYSTEMD
     /* Notify systemd that we're stopping */
-    sd_notify(0, "STOPPING=1\n"
-                 "STATUS=Shutting down gracefully");
+    sd_notifyf(0, "STOPPING=1\n"
+                  "STATUS=Shutting down gracefully");
 #endif
     
     syslog(LOG_INFO, "%s shutting down", PACKAGE_NAME);
