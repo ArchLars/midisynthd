@@ -1,17 +1,26 @@
-# midisynthd
+<table>
+  <tr align="center">
+    <td>
+      <!-- Scale it down to about half-size for a better fit -->
+      <img src="logo.png" alt="midisynthd logo" width="107" height="115">
+    </td>
+    <td>
+      <!-- Your project title -->
+      <h1>midisynthd</h1>
 
-**System-level MIDI Synthesizer Daemon for Linux**
-
-[![CI Build Status](https://github.com/ArchLars/midisynthd/workflows/CI/badge.svg)](https://github.com/ArchLars/midisynthd/actions)
-[![Latest Release](https://img.shields.io/github/v/release/ArchLars/midisynthd)](https://github.com/ArchLars/midisynthd/releases)
-[![License: LGPL v2.1](https://img.shields.io/badge/License-LGPL%20v2.1-blue.svg)](https://www.gnu.org/licenses/lgpl-2.1.html)
-[![Platform: Linux](https://img.shields.io/badge/Platform-Linux-orange.svg)](https://www.kernel.org/)
-
-
+      <!-- Badges -->
+      [![CI Build Status](https://github.com/ArchLars/midisynthd/workflows/CI/badge.svg)](https://github.com/ArchLars/midisynthd/actions)
+      [![Latest Release](https://img.shields.io/github/v/release/ArchLars/midisynthd)](https://github.com/ArchLars/midisynthd/releases)
+      [![License: LGPL v2.1](https://img.shields.io/badge/License-LGPL%20v2.1-blue.svg)](https://www.gnu.org/licenses/lgpl-2.1.html)
+      [![Platform: Linux](https://img.shields.io/badge/Platform-Linux-orange.svg)](https://www.kernel.org)
+    </td>
+  </tr>
+</table>
 
 ---
 
 ## 🎵 Overview
+
 
 `midisynthd` is a lightweight, system-level MIDI synthesizer daemon that provides General MIDI playback on Linux systems. It runs as a background service and exposes itself as an ALSA sequencer device, allowing any MIDI-capable application to use it transparently.
 
