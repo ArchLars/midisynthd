@@ -13,7 +13,7 @@
 
 ## 🎵 Overview
 
-`midisynthd` is a lightweight, system-level MIDI synthesizer daemon that provides General MIDI playback on Linux systems. It runs as a background service and exposes itself as an ALSA sequencer device, allowing any MIDI-capable application to use it transparently – just like the built-in MIDI synthesizer on Windows.
+`midisynthd` is a lightweight, system-level MIDI synthesizer daemon that provides General MIDI playback on Linux systems. It runs as a background service and exposes itself as an ALSA sequencer device, allowing any MIDI-capable application to use it transparently.
 
 ### Why midisynthd?
 
