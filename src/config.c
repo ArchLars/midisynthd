@@ -332,7 +332,7 @@ int config_load_file(midisynthd_config_t *config, const char *filename) {
 /**
  * Get path to user configuration file
  */
-static char* get_user_config_path(void) {
+char* config_get_user_path(void) {
     const char *home = getenv("HOME");
     if (!home) {
         struct passwd *pw = getpwuid(getuid());
@@ -355,6 +355,10 @@ static char* get_user_config_path(void) {
     return path;
 }
 
+const char* config_get_system_path(void) {
+    return CONFIG_SYSTEM_PATH;
+}
+
 /**
  * Load configuration with standard precedence (system -> user)
  */
@@ -369,7 +373,7 @@ int config_load(midisynthd_config_t *config) {
     }
     
     /* Load user configuration (overrides system config) */
-    char *user_config_path = get_user_config_path();
+    char *user_config_path = config_get_user_path();
     if (user_config_path) {
         if (config_load_file(config, user_config_path) == 0) {
             loaded_files++;
@@ -552,4 +556,111 @@ void config_cleanup(midisynthd_config_t *config) {
     /* Currently no dynamic memory to free, but this function
      * is provided for future extensibility */
     memset(config, 0, sizeof(midisynthd_config_t));
+}
+
+int config_save(const midisynthd_config_t *config, const char *filename) {
+    if (!config || !filename) return -1;
+    FILE *f = fopen(filename, "w");
+    if (!f) return -1;
+    fprintf(f, "log_level=%s\n", config_log_level_to_string(config->log_level));
+    fprintf(f, "audio_driver=%s\n", config_audio_driver_to_string(config->audio_driver));
+    fprintf(f, "sample_rate=%d\n", config->sample_rate);
+    fprintf(f, "buffer_size=%d\n", config->buffer_size);
+    fprintf(f, "audio_periods=%d\n", config->audio_periods);
+    fprintf(f, "gain=%.2f\n", config->gain);
+    fprintf(f, "client_name=%s\n", config->client_name);
+    fprintf(f, "midi_autoconnect=%s\n", config->midi_autoconnect ? "yes" : "no");
+    fprintf(f, "polyphony=%d\n", config->polyphony);
+    fprintf(f, "chorus_enabled=%s\n", config->chorus_enabled ? "yes" : "no");
+    fprintf(f, "chorus_level=%.2f\n", config->chorus_level);
+    fprintf(f, "reverb_enabled=%s\n", config->reverb_enabled ? "yes" : "no");
+    fprintf(f, "reverb_level=%.2f\n", config->reverb_level);
+    for (int i = 0; i < config->soundfont_count; i++) {
+        if (config->soundfonts[i].enabled)
+            fprintf(f, "soundfont=%s\n", config->soundfonts[i].path);
+    }
+    fclose(f);
+    return 0;
+}
+
+void config_merge(midisynthd_config_t *system_config, const midisynthd_config_t *user_config) {
+    if (!system_config || !user_config) return;
+    *system_config = *user_config;
+}
+
+bool config_validate_soundfont(const char *path) {
+    return path && access(path, R_OK) == 0;
+}
+
+bool config_find_default_soundfont(char *found_path, size_t path_len) {
+    if (!found_path || path_len == 0) return false;
+    const char *defaults[] = {
+        CONFIG_DEFAULT_SOUNDFONT_PATH,
+        "/usr/share/soundfonts/FluidR3_GM_GS.sf2",
+        "/usr/share/sounds/sf2/FluidR3_GM_GS.sf2",
+        NULL
+    };
+    for (int i = 0; defaults[i]; i++) {
+        if (access(defaults[i], R_OK) == 0) {
+            strncpy(found_path, defaults[i], path_len - 1);
+            found_path[path_len - 1] = '\0';
+            return true;
+        }
+    }
+    return false;
+}
+
+int config_set_option(midisynthd_config_t *config, const char *key, const char *value) {
+    if (!config || !key || !value) return -1;
+    if (strcmp(key, "gain") == 0) {
+        config->gain = atof(value);
+        return 0;
+    }
+    return -1;
+}
+
+int config_get_option(const midisynthd_config_t *config, const char *key, char *value, size_t value_len) {
+    if (!config || !key || !value) return -1;
+    if (strcmp(key, "gain") == 0) {
+        snprintf(value, value_len, "%.2f", config->gain);
+        return 0;
+    }
+    return -1;
+}
+
+bool config_file_exists(const char *filename) {
+    return filename && access(filename, R_OK) == 0;
+}
+
+log_level_t config_parse_log_level(const char *level_str) {
+    return parse_log_level(level_str);
+}
+
+audio_driver_t config_parse_audio_driver(const char *driver_str) {
+    return parse_audio_driver(driver_str);
+}
+
+midi_driver_t config_parse_midi_driver(const char *driver_str) {
+    if (!driver_str) return MIDI_DRIVER_ALSA_SEQ;
+    if (strcasecmp(driver_str, "alsa_raw") == 0) return MIDI_DRIVER_ALSA_RAW;
+    return MIDI_DRIVER_ALSA_SEQ;
+}
+
+const char* config_log_level_to_string(log_level_t level) {
+    switch (level) {
+        case LOG_LEVEL_DEBUG: return "debug";
+        case LOG_LEVEL_INFO:  return "info";
+        case LOG_LEVEL_WARN:  return "warn";
+        default: return "error";
+    }
+}
+
+const char* config_audio_driver_to_string(audio_driver_t driver) {
+    if (driver < 0 || driver >= AUDIO_DRIVER_COUNT) return "unknown";
+    return audio_driver_names[driver];
+}
+
+const char* config_midi_driver_to_string(midi_driver_t driver) {
+    if (driver < 0 || driver >= MIDI_DRIVER_COUNT) return "unknown";
+    return midi_driver_names[driver];
 }

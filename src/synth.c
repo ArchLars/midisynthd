@@ -777,3 +777,22 @@ int synth_handle_midi_event(synth_t *synth, snd_seq_event_t *ev) {
 bool synth_is_ready(synth_t *synth) {
     return synth && synth->initialized && synth->synth && synth->audio_driver;
 }
+
+int synth_unload_soundfont(synth_t *synth, int soundfont_id) {
+    if (!synth || !synth->synth) return -1;
+    if (fluid_synth_sfunload(synth->synth, soundfont_id, 1) == FLUID_OK)
+        return 0;
+    return -1;
+}
+
+int synth_set_polyphony(synth_t *synth, int polyphony) {
+    if (!synth || !synth->synth || polyphony <= 0) return -1;
+    if (fluid_synth_set_polyphony(synth->synth, polyphony) != FLUID_OK)
+        return -1;
+    return 0;
+}
+
+int synth_get_polyphony(synth_t *synth) {
+    if (!synth || !synth->synth) return -1;
+    return fluid_synth_get_polyphony(synth->synth);
+}

@@ -52,6 +52,7 @@
 /* Global state */
 static volatile sig_atomic_t g_running = 1;
 static volatile sig_atomic_t g_reload_config = 0;
+static volatile sig_atomic_t g_print_status = 0;
 static midisynthd_config_t g_config;
 static synth_t *g_synth = NULL;
 static midi_alsa_t *g_midi = NULL;
@@ -163,7 +164,7 @@ static void signal_handler(int sig) {
             if (g_config.log_level >= LOG_LEVEL_INFO) {
                 syslog(LOG_INFO, "Received SIGUSR1, printing status information");
             }
-            /* TODO: Print status to log */
+            g_print_status = 1;
             break;
         default:
             syslog(LOG_WARNING, "Received unexpected signal %d", sig);
@@ -199,38 +200,11 @@ static int setup_signals(void) {
 }
 
 /**
- * Get expanded path for user configuration file
- */
-static char* get_user_config_path(void) {
-    const char *home = getenv("HOME");
-    if (!home) {
-        struct passwd *pw = getpwuid(getuid());
-        if (pw) {
-            home = pw->pw_dir;
-        }
-    }
-    
-    if (!home) {
-        return NULL;
-    }
-    
-    size_t path_len = strlen(home) + strlen(CONFIG_USER_PATH) + 1;
-    char *path = malloc(path_len);
-    if (!path) {
-        return NULL;
-    }
-    
-    snprintf(path, path_len, "%s%s", home, CONFIG_USER_PATH);
-    return path;
-}
-
-/**
  * Load configuration from files and apply command line overrides
  */
 static int load_configuration(const char *config_file, const char *soundfont_override,
                              const char *user_override, const char *group_override,
                              int verbose, int quiet, int no_realtime) {
-    char *user_config_path = NULL;
     int ret = 0;
     
     /* Initialize with default values */
@@ -444,6 +418,11 @@ static int reload_configuration(void) {
         setlogmask(log_mask);
     }
     
+    synth_update_settings(g_synth, &new_config);
+
+    /* Replace stored configuration */
+    g_config = new_config;
+
     /* TODO: Apply runtime-changeable settings to modules */
     
     syslog(LOG_INFO, "Configuration reloaded successfully");
@@ -474,6 +453,16 @@ static int main_loop(void) {
         if (g_reload_config) {
             g_reload_config = 0;
             reload_configuration();
+        }
+
+        if (g_print_status) {
+            g_print_status = 0;
+            synth_status_t status;
+            if (synth_get_status(g_synth, &status) == 0) {
+                syslog(LOG_INFO, "Synth status: voices=%d/%d, gain=%.2f, cpu=%.2f%%", 
+                       status.active_voices, status.max_polyphony,
+                       synth_get_gain(g_synth), status.cpu_load);
+            }
         }
         
         /* Process MIDI events */

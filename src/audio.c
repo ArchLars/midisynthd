@@ -366,3 +366,40 @@ void audio_cleanup(audio_t *audio) {
     audio->initialized = false;
     free(audio);
 }
+
+audio_driver_t audio_detect_best_driver(void) {
+    return detect_audio_driver();
+}
+
+int audio_detect_drivers(audio_driver_info_t drivers[AUDIO_DRIVER_COUNT]) {
+    if (!drivers) return 0;
+    memset(drivers, 0, sizeof(audio_driver_info_t) * AUDIO_DRIVER_COUNT);
+    drivers[AUDIO_DRIVER_JACK].available = is_jack_available();
+    drivers[AUDIO_DRIVER_PIPEWIRE].available = is_pipewire_available();
+    drivers[AUDIO_DRIVER_PULSEAUDIO].available = is_pulseaudio_available();
+    drivers[AUDIO_DRIVER_ALSA].available = true;
+    int count = 0;
+    for (int i = 0; i < AUDIO_DRIVER_COUNT; i++)
+        if (drivers[i].available) count++;
+    return count;
+}
+
+int audio_get_stats(const audio_t *audio, audio_stats_t *stats) {
+    if (!audio || !stats || !audio->settings) return -1;
+    memset(stats, 0, sizeof(*stats));
+    double sr;
+    if (fluid_settings_getnum(audio->settings, "synth.sample-rate", &sr) == FLUID_OK)
+        stats->sample_rate = (uint32_t)sr;
+    fluid_settings_getint(audio->settings, "audio.period-size", (int *)&stats->buffer_size);
+    stats->channels = 2;
+    stats->format_bits = 16;
+    return 0;
+}
+
+int audio_set_gain(audio_t *audio, float gain) {
+    (void)audio; (void)gain; return -1;
+}
+
+float audio_get_gain(const audio_t *audio) {
+    (void)audio; return -1.0f;
+}
