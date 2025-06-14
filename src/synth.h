@@ -157,7 +157,7 @@ int synth_note_on(synth_t *synth, int channel, int note, int velocity);
  * @param synth Synthesizer instance
  * @param channel MIDI channel (0-15)
  * @param note MIDI note number (0-127)
- * @param velocity Release velocity (0-127)
+ * @param velocity Release velocity (0-127) - optional, can be 0
  * @return 0 on success, negative on error
  */
 int synth_note_off(synth_t *synth, int channel, int note, int velocity);
@@ -380,11 +380,26 @@ bool synth_is_ready(synth_t *synth);
 
 /**
  * Get the FluidSynth settings object used by the synthesizer
+ * 
+ * @param synth Synthesizer instance
+ * @return FluidSynth settings object, or NULL on error
  */
 fluid_settings_t *synth_get_settings(synth_t *synth);
 
 /**
+ * Get the FluidSynth object for MIDI driver use
+ * 
+ * @param synth Synthesizer instance
+ * @return FluidSynth object, or NULL on error
+ */
+fluid_synth_t *synth_get_fluidsynth(synth_t *synth);
+
+/**
  * Handle an ALSA sequencer MIDI event
+ * 
+ * @param synth Synthesizer instance
+ * @param ev ALSA sequencer event to process
+ * @return 0 on success, negative on error
  */
 int synth_handle_midi_event(synth_t *synth, snd_seq_event_t *ev);
 
