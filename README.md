@@ -25,7 +25,7 @@ midisynthd/                     // Project root directory
 ├── include/                   // Public headers (if exposing any library API, optional)
 │   └── midisynthd.h           // Example public API header (not needed for basic daemon usage)
 ├── soundfonts/                // (Optional) SoundFont files or placeholders
-│   └── FluidR3_GM.sf2         // (Optional) Default General MIDI SoundFont (if distribution permits)
+│   └── FluidR3_GM_GS.sf2         // (Optional) Default General MIDI SoundFont (if distribution permits)
 ├── config/
 │   ├── midisynthd.conf        // System-wide default config (installed to /etc/midisynthd.conf)
 │   └── midisynthd.conf.example// Example user configuration with documentation of options
@@ -67,7 +67,7 @@ Write initial unit tests (possibly using a lightweight framework like CMocka or 
 ### 2. FluidSynth Engine Integration (Audio Output Setup)
 
 **Technologies & Libraries:**  
-Utilize the FluidSynth API to create the synthesizer instance. Call `new_fluid_settings()` to configure synthesis parameters and `new_fluid_synth()` to instantiate the synth. Use FluidSynth to load a General MIDI SoundFont (e.g. FluidR3_GM.sf2 or another free GM sound set). Create an audio driver via FluidSynth (using `new_fluid_audio_driver()`) with an appropriate audio backend. Integrate with JACK, PipeWire, or PulseAudio using FluidSynth's support for those audio systems.
+Utilize the FluidSynth API to create the synthesizer instance. Call `new_fluid_settings()` to configure synthesis parameters and `new_fluid_synth()` to instantiate the synth. Use FluidSynth to load a General MIDI SoundFont (e.g. FluidR3_GM_GS.sf2 or another free GM sound set). Create an audio driver via FluidSynth (using `new_fluid_audio_driver()`) with an appropriate audio backend. Integrate with JACK, PipeWire, or PulseAudio using FluidSynth's support for those audio systems.
 
 **Design Considerations:**  
 Ensure the synthesizer is configured for General MIDI (16 channels, channel 10 as percussion). Set a default sample rate (e.g. 48000 Hz) and polyphony (e.g. 256 voices). Implement audio subsystem detection:  
