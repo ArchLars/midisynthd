@@ -687,3 +687,46 @@ int synth_update_settings(synth_t *synth, const midisynthd_config_t *new_config)
     
     return 0;
 }
+
+fluid_settings_t *synth_get_settings(synth_t *synth) {
+    if (!synth) return NULL;
+    return synth->settings;
+}
+
+int synth_handle_midi_event(synth_t *synth, snd_seq_event_t *ev) {
+    if (!synth || !ev) return -1;
+
+    switch (ev->type) {
+        case SND_SEQ_EVENT_NOTEON:
+            return synth_note_on(synth, ev->data.note.channel,
+                                 ev->data.note.note,
+                                 ev->data.note.velocity);
+        case SND_SEQ_EVENT_NOTEOFF:
+            return synth_note_off(synth, ev->data.note.channel,
+                                  ev->data.note.note);
+        case SND_SEQ_EVENT_KEYPRESS:
+            return synth_key_pressure(synth, ev->data.note.channel,
+                                      ev->data.note.note,
+                                      ev->data.note.velocity);
+        case SND_SEQ_EVENT_CONTROLLER:
+            return synth_control_change(synth,
+                                        ev->data.control.channel,
+                                        ev->data.control.param,
+                                        ev->data.control.value);
+        case SND_SEQ_EVENT_PGMCHANGE:
+            return synth_program_change(synth,
+                                        ev->data.control.channel,
+                                        ev->data.control.value);
+        case SND_SEQ_EVENT_CHANPRESS:
+            return synth_channel_pressure(synth,
+                                          ev->data.control.channel,
+                                          ev->data.control.value);
+        case SND_SEQ_EVENT_PITCHBEND:
+            return synth_pitch_bend(synth,
+                                   ev->data.control.channel,
+                                   ev->data.control.value + 8192);
+        default:
+            break;
+    }
+    return 0;
+}

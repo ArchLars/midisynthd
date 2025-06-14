@@ -1,0 +1,6 @@
+# Example configuration for midisynthd
+#soundfont=/path/to/soundfont.sf2
+#gain=1.0
+#polyphony=512
+#audio_driver=pipewire
+#midi_autoconnect=yes
