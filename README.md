@@ -234,6 +234,24 @@ Force a specific driver:
 audio_driver = pipewire
 ```
 
+### Audio Effects
+
+midisynthd exposes simple controls for its built‑in effects.
+
+```ini
+# Enable or disable chorus (default: yes)
+chorus_enabled = yes
+
+# Strength of the chorus effect (default: 1.2)
+chorus_level = 1.2
+
+# Enable or disable reverb (default: yes)
+reverb_enabled = yes
+
+# Strength of the reverb effect (default: 0.9)
+reverb_level = 0.9
+```
+
 ## 📖 Advanced Usage
 
 ### Command Line Options
