@@ -139,10 +139,10 @@ static int setup_fluidsynth_settings(synth_t *synth) {
     }
     
     /* Set number of buffer periods */
-    if (fluid_settings_setint(synth->settings, "audio.periods", config->buffer_count) != FLUID_OK) {
-        syslog(LOG_WARNING, "Failed to set buffer count to %d", config->buffer_count);
+    if (fluid_settings_setint(synth->settings, "audio.periods", config->audio_periods) != FLUID_OK) {
+        syslog(LOG_WARNING, "Failed to set buffer count to %d", config->audio_periods);
     } else {
-        syslog(LOG_DEBUG, "Set buffer count to %d periods", config->buffer_count);
+        syslog(LOG_DEBUG, "Set buffer count to %d periods", config->audio_periods);
     }
     
     /* Enable real-time priority if configured */
@@ -162,13 +162,11 @@ static int setup_fluidsynth_settings(synth_t *synth) {
             syslog(LOG_DEBUG, "Set JACK client name to '%s'", config->client_name);
         }
         
-        /* Auto-connect JACK ports if requested */
-        if (config->jack_autoconnect) {
-            if (fluid_settings_setstr(synth->settings, "audio.jack.autoconnect", "yes") != FLUID_OK) {
-                syslog(LOG_WARNING, "Failed to enable JACK auto-connect");
-            } else {
-                syslog(LOG_DEBUG, "Enabled JACK auto-connect");
-            }
+        /* Enable JACK auto-connect by default */
+        if (fluid_settings_setstr(synth->settings, "audio.jack.autoconnect", "yes") != FLUID_OK) {
+            syslog(LOG_WARNING, "Failed to enable JACK auto-connect");
+        } else {
+            syslog(LOG_DEBUG, "Enabled JACK auto-connect");
         }
     }
     
@@ -413,7 +411,7 @@ int synth_note_on(synth_t *synth, int channel, int key, int velocity) {
 /**
  * Send a Note Off MIDI event to the synthesizer
  */
-int synth_note_off(synth_t *synth, int channel, int key) {
+int synth_note_off(synth_t *synth, int channel, int key, int velocity) {
     if (!synth || !synth->initialized || !synth->synth) {
         return -1;
     }
@@ -567,20 +565,17 @@ int synth_all_sound_off(synth_t *synth, int channel) {
 /**
  * Send an All Notes Off MIDI event to the synthesizer
  */
-int synth_all_notes_off(synth_t *synth, int channel) {
+int synth_all_notes_off(synth_t *synth) {
     if (!synth || !synth->initialized || !synth->synth) {
         return -1;
     }
     
-    if (channel < 0 || channel >= 16) {
-        syslog(LOG_DEBUG, "Invalid MIDI parameters: channel=%d", channel);
-        return -1;
-    }
-    
-    int result = fluid_synth_all_notes_off(synth->synth, channel);
-    if (result != FLUID_OK) {
-        syslog(LOG_DEBUG, "FluidSynth all notes off failed: channel=%d", channel);
-        return -1;
+    /* Send all notes off to all channels */
+    for (int channel = 0; channel < 16; channel++) {
+        int result = fluid_synth_all_notes_off(synth->synth, channel);
+        if (result != FLUID_OK) {
+            syslog(LOG_DEBUG, "FluidSynth all notes off failed: channel=%d", channel);
+        }
     }
     
     return 0;
@@ -589,7 +584,7 @@ int synth_all_notes_off(synth_t *synth, int channel) {
 /**
  * Reset all MIDI channels
  */
-int synth_reset(synth_t *synth) {
+int synth_reset_controllers(synth_t *synth) {
     if (!synth || !synth->initialized || !synth->synth) {
         return -1;
     }
@@ -620,6 +615,34 @@ int synth_reset(synth_t *synth) {
 }
 
 /**
+ * Set the master gain (volume) of the synthesizer
+ */
+int synth_set_gain(synth_t *synth, float gain) {
+    if (!synth || !synth->initialized || !synth->synth) {
+        return -1;
+    }
+    
+    if (gain < 0.0f || gain > 2.0f) {
+        syslog(LOG_DEBUG, "Invalid gain value: %.2f", gain);
+        return -1;
+    }
+    
+    fluid_synth_set_gain(synth->synth, gain);
+    return 0;
+}
+
+/**
+ * Get the current master gain setting
+ */
+float synth_get_gain(synth_t *synth) {
+    if (!synth || !synth->initialized || !synth->synth) {
+        return -1.0f;
+    }
+    
+    return fluid_synth_get_gain(synth->synth);
+}
+
+/**
  * Get synthesizer status information
  */
 int synth_get_status(synth_t *synth, synth_status_t *status) {
@@ -629,13 +652,22 @@ int synth_get_status(synth_t *synth, synth_status_t *status) {
     
     memset(status, 0, sizeof(synth_status_t));
     
+    status->initialized = synth->initialized;
     status->active_voices = fluid_synth_get_active_voice_count(synth->synth);
-    status->polyphony = fluid_synth_get_polyphony(synth->synth);
-    status->gain = fluid_synth_get_gain(synth->synth);
+    status->max_polyphony = fluid_synth_get_polyphony(synth->synth);
     status->cpu_load = fluid_synth_get_cpu_load(synth->synth);
+    status->soundfonts_loaded = (synth->soundfont_id != FLUID_FAILED) ? 1 : 0;
     
-    status->soundfont_loaded = (synth->soundfont_id != FLUID_FAILED);
-    status->audio_driver_active = (synth->audio_driver != NULL);
+    /* Get sample rate and buffer size from settings */
+    double sample_rate;
+    if (fluid_settings_getnum(synth->settings, "synth.sample-rate", &sample_rate) == FLUID_OK) {
+        status->sample_rate = sample_rate;
+    }
+    
+    int buffer_size;
+    if (fluid_settings_getint(synth->settings, "audio.period-size", &buffer_size) == FLUID_OK) {
+        status->buffer_size = buffer_size;
+    }
     
     return 0;
 }
@@ -693,6 +725,14 @@ fluid_settings_t *synth_get_settings(synth_t *synth) {
     return synth->settings;
 }
 
+/**
+ * Get the FluidSynth object for MIDI driver use
+ */
+fluid_synth_t *synth_get_fluidsynth(synth_t *synth) {
+    if (!synth || !synth->initialized) return NULL;
+    return synth->synth;
+}
+
 int synth_handle_midi_event(synth_t *synth, snd_seq_event_t *ev) {
     if (!synth || !ev) return -1;
 
@@ -703,7 +743,7 @@ int synth_handle_midi_event(synth_t *synth, snd_seq_event_t *ev) {
                                  ev->data.note.velocity);
         case SND_SEQ_EVENT_NOTEOFF:
             return synth_note_off(synth, ev->data.note.channel,
-                                  ev->data.note.note);
+                                  ev->data.note.note, 0);
         case SND_SEQ_EVENT_KEYPRESS:
             return synth_key_pressure(synth, ev->data.note.channel,
                                       ev->data.note.note,
@@ -729,4 +769,11 @@ int synth_handle_midi_event(synth_t *synth, snd_seq_event_t *ev) {
             break;
     }
     return 0;
+}
+
+/**
+ * Check if the synthesizer is properly initialized and ready
+ */
+bool synth_is_ready(synth_t *synth) {
+    return synth && synth->initialized && synth->synth && synth->audio_driver;
 }
