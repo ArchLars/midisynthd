@@ -23,6 +23,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stddef.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -129,42 +130,26 @@ typedef struct {
     float reverb_width;
 } synth_config_t;
 
-/* Main configuration structure */
-typedef struct {
-    /* Logging */
+/* Main configuration structure used by config.c */
+typedef struct midisynthd_config_t {
     log_level_t log_level;
-    bool log_timestamps;
-    char log_file[CONFIG_MAX_PATH_LEN];
-    
-    /* Daemon operation */
-    char user[CONFIG_MAX_STRING_LEN];
-    char group[CONFIG_MAX_STRING_LEN];
-    char pid_file[CONFIG_MAX_PATH_LEN];
-    bool daemon_mode;
-    
-    /* Audio subsystem */
-    audio_config_t audio;
-    
-    /* MIDI subsystem */
-    midi_config_t midi;
-    
-    /* Synthesis engine */
-    synth_config_t synth;
-    
-    /* SoundFonts */
-    soundfont_config_t soundfonts[CONFIG_MAX_SOUNDFONTS];
-    int soundfont_count;
-    
-    /* Backwards compatibility fields (for main.c) */
     audio_driver_t audio_driver;
-    bool realtime_priority;
+    int sample_rate;
+    int buffer_size;
+    int audio_periods;
+    float gain;
     char client_name[CONFIG_MAX_STRING_LEN];
     bool midi_autoconnect;
-    float gain;
+    int polyphony;
     bool chorus_enabled;
     float chorus_level;
     bool reverb_enabled;
     float reverb_level;
+    soundfont_config_t soundfonts[CONFIG_MAX_SOUNDFONTS];
+    int soundfont_count;
+    bool realtime_priority;
+    char user[CONFIG_MAX_STRING_LEN];
+    char group[CONFIG_MAX_STRING_LEN];
 } midisynthd_config_t;
 
 /* Configuration validation result codes */

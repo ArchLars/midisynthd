@@ -28,7 +28,9 @@
 
 /* Forward declarations */
 typedef struct synth_s synth_t;
-typedef struct midisynthd_config_s midisynthd_config_t;
+struct midisynthd_config_t;
+typedef struct midisynthd_config_t midisynthd_config_t;
+struct audio_s;
 typedef struct audio_s audio_t;
 
 /**

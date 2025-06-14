@@ -41,7 +41,7 @@ const char *audio_driver_names[AUDIO_DRIVER_COUNT] = {
 };
 
 /* Audio subsystem structure */
-struct audio_t {
+struct audio_s {
     audio_driver_t driver_type;
     fluid_settings_t *settings;
     fluid_audio_driver_t *driver;
