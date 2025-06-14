@@ -23,6 +23,7 @@
 #include <errno.h>
 #include <poll.h>
 #include <fluidsynth.h>
+#include <fluidsynth/midi.h>
 #include "midi_alsa.h"
 #include "synth.h"
 
@@ -135,22 +136,15 @@ int midi_alsa_process_events(midi_alsa_t *midi, int timeout_ms) {
     if (!midi || !midi->initialized) {
         return -1;
     }
-    
-    /* Since FluidSynth handles MIDI events in its own thread via the callback,
-     * we don't need to explicitly poll for events here. However, we can
-     * use this function for other MIDI-related processing if needed.
-     * 
-     * For now, we just return success. In a more complex implementation,
-     * this could be used for:
-     * - Custom MIDI routing
-     * - MIDI event logging
-     * - Statistics collection
-     * - Additional MIDI sources beyond ALSA sequencer
-     */
-    
-    (void)timeout_ms; /* Unused for now */
-    
-    return 0; /* Success - events handled by FluidSynth callback */
+
+    /* FluidSynth processes MIDI in its own thread. To avoid spinning the main
+     * loop, simply sleep for the requested timeout. Using poll with no
+     * descriptors provides a portable millisecond sleep. */
+    if (timeout_ms > 0) {
+        poll(NULL, 0, timeout_ms);
+    }
+
+    return 0;
 }
 
 /**
