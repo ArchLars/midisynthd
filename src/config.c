@@ -30,28 +30,23 @@
 #include <limits.h>
 #include <pwd.h>
 
-/* Configuration file paths */
-#define CONFIG_SYSTEM_PATH "/etc/midisynthd.conf"
-#define CONFIG_USER_PATH "/.config/midisynthd.conf"
-
-/* Default configuration values */
-#define CONFIG_DEFAULT_SOUNDFONT_PATH "/usr/share/soundfonts/FluidR3_GM_GS.sf2"
-#define CONFIG_DEFAULT_CLIENT_NAME "MidiSynth Daemon"
-#define CONFIG_DEFAULT_GAIN 0.5f
-#define CONFIG_DEFAULT_CHORUS_LEVEL 1.2f
-#define CONFIG_DEFAULT_REVERB_LEVEL 0.9f
-#define CONFIG_DEFAULT_SAMPLE_RATE 48000
-#define CONFIG_DEFAULT_POLYPHONY 256
-#define CONFIG_DEFAULT_BUFFER_SIZE 512
-#define CONFIG_DEFAULT_AUDIO_PERIODS 2
-
 /* Configuration limits */
-#define CONFIG_MAX_PATH_LEN 512
-#define CONFIG_MAX_STRING_LEN 256
-#define CONFIG_MAX_SOUNDFONTS 8
 #define CONFIG_MAX_LINE_LEN 1024
 
+/* Audio driver names array (referenced in main.c) */
+const char *audio_driver_names[AUDIO_DRIVER_COUNT] = {
+    "auto",
+    "jack",
+    "pipewire", 
+    "pulseaudio",
+    "alsa"
+};
 
+/* MIDI driver names array */
+const char *midi_driver_names[MIDI_DRIVER_COUNT] = {
+    "alsa_seq",
+    "alsa_raw"
+};
 
 /**
  * Trim whitespace from the beginning and end of a string
