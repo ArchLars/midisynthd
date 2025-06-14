@@ -58,8 +58,7 @@ target_link_libraries(midisynthd
 )
 
 if(HAVE_SYSTEMD)
-    target_link_libraries(midisynthd ${SYSTEMD_LIBRARIES})
-    target_include_directories(midisynthd PRIVATE ${SYSTEMD_INCLUDE_DIRS})
+    target_compile_definitions(midisynthd PRIVATE HAVE_SYSTEMD)
 endif()
 
 # Define HAVE_SYSTEMD for the source code
