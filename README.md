@@ -63,7 +63,7 @@ midisynthd/
 
 ### Signal Flow
 
-```
+```mermaid
 flowchart TB
     subgraph INPUT_SOURCES["Input Sources"]
         KB[MIDI Keyboard (Hardware)]
