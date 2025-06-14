@@ -54,6 +54,7 @@ midisynthd/
 └── docs/            # Documentation
 ```
 
+### Signal Flow
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                        INPUT SOURCES                             │
