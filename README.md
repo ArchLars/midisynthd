@@ -36,8 +36,15 @@
   - FluidSynth (≥ 2.0)
   - ALSA (libasound2)
   - systemd (optional, for service integration)
-- **Runtime**: 
+- **Runtime**:
   - General MIDI SoundFont (e.g., FluidR3_GM_GS.sf2)
+
+For Debian/Ubuntu systems, install the build requirements with:
+
+```bash
+sudo apt-get install build-essential cmake pkg-config libasound2-dev \
+    libfluidsynth-dev libsystemd-dev libcmocka-dev
+```
  
 ### Project Structure
 ```
