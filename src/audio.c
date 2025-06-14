@@ -32,16 +32,6 @@
 #include <pulse/pulseaudio.h>
 #include <fluidsynth.h>
 
-/* Audio driver names array for logging and user feedback */
-const char *const audio_driver_names[AUDIO_DRIVER_COUNT] = {
-    "auto",
-    "jack",
-    "pipewire",
-    "pulseaudio",
-    "alsa",
-    "file"
-};
-
 /* Audio subsystem structure */
 struct audio_s {
     audio_driver_t driver_type;
@@ -229,7 +219,10 @@ static int configure_audio_settings(fluid_settings_t *settings, audio_driver_t d
             break;
             
         case AUDIO_DRIVER_ALSA:
-            /* ALSA-specific settings - using default device */
+            /* ALSA-specific settings - use default device */
+            if (fluid_settings_setstr(settings, "audio.alsa.device", "default") != FLUID_OK) {
+                syslog(LOG_WARNING, "Failed to set ALSA device to default");
+            }
             break;
             
         default:
