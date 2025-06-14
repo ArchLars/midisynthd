@@ -31,6 +31,7 @@
 #include <sys/stat.h>
 
 #include <fluidsynth.h>
+#include <fluidsynth/midi.h>
 
 /**
  * Internal synthesizer structure
