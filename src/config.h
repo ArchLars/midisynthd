@@ -25,8 +25,6 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#include "audio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -44,7 +42,7 @@ extern "C" {
 #define CONFIG_DEFAULT_CHORUS_LEVEL  1.2f
 #define CONFIG_DEFAULT_REVERB_LEVEL  0.9f
 #define CONFIG_DEFAULT_BUFFER_SIZE   512
-#define CONFIG_DEFAULT_BUFFER_COUNT  4
+#define CONFIG_DEFAULT_AUDIO_PERIODS 4
 
 /* String and path length limits */
 #define CONFIG_MAX_PATH_LEN         512
@@ -60,6 +58,16 @@ typedef enum {
     LOG_LEVEL_DEBUG = 3
 } log_level_t;
 
+/* Audio driver types */
+typedef enum {
+    AUDIO_DRIVER_AUTO = 0,
+    AUDIO_DRIVER_JACK,
+    AUDIO_DRIVER_PIPEWIRE,
+    AUDIO_DRIVER_PULSEAUDIO,
+    AUDIO_DRIVER_ALSA,
+    AUDIO_DRIVER_COUNT
+} audio_driver_t;
+
 /* MIDI driver types */
 typedef enum {
     MIDI_DRIVER_ALSA_SEQ = 0,
@@ -68,6 +76,7 @@ typedef enum {
 } midi_driver_t;
 
 /* Audio driver names for display and configuration */
+extern const char *audio_driver_names[];
 extern const char *midi_driver_names[MIDI_DRIVER_COUNT];
 
 /* SoundFont configuration */
