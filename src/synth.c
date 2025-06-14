@@ -267,23 +267,29 @@ static void setup_effects(synth_t *synth) {
     
     /* Configure chorus */
     if (config->chorus_enabled) {
-        fluid_synth_set_chorus_on(synth->synth, 1);
-        /* FluidSynth chorus parameters: N, level, speed, depth, type */
-        fluid_synth_set_chorus(synth->synth, 3, config->chorus_level, 0.3, 8.0, FLUID_CHORUS_MOD_SINE);
+        /* Effects group 0 is the default */
+        fluid_synth_chorus_on(synth->synth, 0, 1);
+        fluid_synth_set_chorus_group_nr(synth->synth, 0, 3);
+        fluid_synth_set_chorus_group_level(synth->synth, 0, config->chorus_level);
+        fluid_synth_set_chorus_group_speed(synth->synth, 0, 0.3);
+        fluid_synth_set_chorus_group_depth(synth->synth, 0, 8.0);
+        fluid_synth_set_chorus_group_type(synth->synth, 0, FLUID_CHORUS_MOD_SINE);
         syslog(LOG_DEBUG, "Enabled chorus with level %.2f", config->chorus_level);
     } else {
-        fluid_synth_set_chorus_on(synth->synth, 0);
+        fluid_synth_chorus_on(synth->synth, 0, 0);
         syslog(LOG_DEBUG, "Disabled chorus");
     }
     
     /* Configure reverb */
     if (config->reverb_enabled) {
-        fluid_synth_set_reverb_on(synth->synth, 1);
-        /* FluidSynth reverb parameters: roomsize, damping, width, level */
-        fluid_synth_set_reverb(synth->synth, 0.2, 0.0, 0.5, config->reverb_level);
+        fluid_synth_reverb_on(synth->synth, 0, 1);
+        fluid_synth_set_reverb_group_roomsize(synth->synth, 0, 0.2);
+        fluid_synth_set_reverb_group_damp(synth->synth, 0, 0.0);
+        fluid_synth_set_reverb_group_width(synth->synth, 0, 0.5);
+        fluid_synth_set_reverb_group_level(synth->synth, 0, config->reverb_level);
         syslog(LOG_DEBUG, "Enabled reverb with level %.2f", config->reverb_level);
     } else {
-        fluid_synth_set_reverb_on(synth->synth, 0);
+        fluid_synth_reverb_on(synth->synth, 0, 0);
         syslog(LOG_DEBUG, "Disabled reverb");
     }
 }
@@ -697,11 +703,15 @@ int synth_update_settings(synth_t *synth, const midisynthd_config_t *new_config)
         new_config->chorus_level != synth->config->chorus_level) {
         
         if (new_config->chorus_enabled) {
-            fluid_synth_set_chorus_on(synth->synth, 1);
-            fluid_synth_set_chorus(synth->synth, 3, new_config->chorus_level, 0.3, 8.0, FLUID_CHORUS_MOD_SINE);
+            fluid_synth_chorus_on(synth->synth, 0, 1);
+            fluid_synth_set_chorus_group_nr(synth->synth, 0, 3);
+            fluid_synth_set_chorus_group_level(synth->synth, 0, new_config->chorus_level);
+            fluid_synth_set_chorus_group_speed(synth->synth, 0, 0.3);
+            fluid_synth_set_chorus_group_depth(synth->synth, 0, 8.0);
+            fluid_synth_set_chorus_group_type(synth->synth, 0, FLUID_CHORUS_MOD_SINE);
             syslog(LOG_INFO, "Updated chorus: enabled, level %.2f", new_config->chorus_level);
         } else {
-            fluid_synth_set_chorus_on(synth->synth, 0);
+            fluid_synth_chorus_on(synth->synth, 0, 0);
             syslog(LOG_INFO, "Updated chorus: disabled");
         }
     }
@@ -711,11 +721,14 @@ int synth_update_settings(synth_t *synth, const midisynthd_config_t *new_config)
         new_config->reverb_level != synth->config->reverb_level) {
         
         if (new_config->reverb_enabled) {
-            fluid_synth_set_reverb_on(synth->synth, 1);
-            fluid_synth_set_reverb(synth->synth, 0.2, 0.0, 0.5, new_config->reverb_level);
+            fluid_synth_reverb_on(synth->synth, 0, 1);
+            fluid_synth_set_reverb_group_roomsize(synth->synth, 0, 0.2);
+            fluid_synth_set_reverb_group_damp(synth->synth, 0, 0.0);
+            fluid_synth_set_reverb_group_width(synth->synth, 0, 0.5);
+            fluid_synth_set_reverb_group_level(synth->synth, 0, new_config->reverb_level);
             syslog(LOG_INFO, "Updated reverb: enabled, level %.2f", new_config->reverb_level);
         } else {
-            fluid_synth_set_reverb_on(synth->synth, 0);
+            fluid_synth_reverb_on(synth->synth, 0, 0);
             syslog(LOG_INFO, "Updated reverb: disabled");
         }
     }
