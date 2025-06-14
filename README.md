@@ -76,7 +76,6 @@ midisynthd/
 ├── systemd/         # Service unit files
 ├── config/          # Default configurations  
 ├── tests/           # Unit tests
-└── docs/            # Documentation
 ```
 
 ### Signal Flow
