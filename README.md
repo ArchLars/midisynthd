@@ -130,8 +130,9 @@ cd midisynthd
 # Create build directory
 mkdir build && cd build
 
-# Configure
-cmake .. -DCMAKE_BUILD_TYPE=Release
+# Configure for local installation
+cmake .. -DCMAKE_INSTALL_PREFIX=$HOME/.local \
+         -DCMAKE_BUILD_TYPE=Release
 
 # Build
 make -j$(nproc)
@@ -139,12 +140,12 @@ make -j$(nproc)
 # Run tests (optional)
 make test
 
-# Install system-wide
-sudo make install
+# Install into ~/.local (no sudo needed)
+make install
 
-# Install systemd service files
-sudo cp ../systemd/midisynthd.service /usr/lib/systemd/system/
-sudo cp ../systemd/midisynthd-user.service /usr/lib/systemd/user/
+# Install user service file
+mkdir -p ~/.config/systemd/user
+cp ../systemd/midisynthd-user.service ~/.config/systemd/user/
 ```
 
 ## 🚀 Quick Start
