@@ -65,28 +65,19 @@ midisynthd/
 
 ```mermaid
 flowchart TB
-    subgraph INPUT_SOURCES["Input Sources"]
-        KB["MIDI Keyboard (Hardware)"]
-        MF["MIDI Files (aplaymidi)"]
-        OMA["Other MIDI Applications (DAWs, Sequencers)"]
-    end
+    IS["Input Sources<br/>• MIDI Keyboard (Hardware)<br/>• MIDI Files (aplaymidi)<br/>• Other MIDI Applications (DAWs, Sequencers)"]
+    ALSA["ALSA Sequencer Layer<br/>(Linux MIDI Infrastructure)"]
+    MS["midisynthd"]
 
-    subgraph ALSA["ALSA Sequencer Layer\n(Linux MIDI Infrastructure)"]
-    end
+    IS --> ALSA --> MS
 
-    KB --> ALSA
-    MF --> ALSA
-    OMA --> ALSA
-
-    ALSA --> MS[midisynthd]
-
-    subgraph MS_CONTENT["midisynthd"]
+    subgraph "midisynthd internals"
         direction LR
-        MC["main.c\n- Entry point\n- Signal mgmt\n- Event loop"]
-        CC["config.c/h\n- Load configs\n- Validate"]
-        MAC["midi_alsa.c/h\n- MIDI input\n- ALSA client\n- Event routing"]
-        SC["synth.c/h\n- FluidSynth\n- Note handling\n- Soundfont mgmt"]
-        AC["audio.c/h\n- Driver detect\n- Audio output"]
+        MC["main.c<br/>- Entry point<br/>- Signal mgmt<br/>- Event loop"]
+        CC["config.c/h<br/>- Load configs<br/>- Validate"]
+        MAC["midi_alsa.c/h<br/>- MIDI input<br/>- ALSA client<br/>- Event routing"]
+        SC["synth.c/h<br/>- FluidSynth<br/>- Note handling<br/>- Soundfont mgmt"]
+        AC["audio.c/h<br/>- Driver detect<br/>- Audio output"]
 
         MC --- CC
         MC --- MAC
@@ -94,9 +85,9 @@ flowchart TB
         SC --> AC
     end
 
-    MS --> PP["PipeWire/PulseAudio (Desktop Audio)"]
-    MS --> JACK["JACK (Pro Audio)"]
-    PP --> AH["Audio Hardware (Speakers/Phones)"]
+    MS --> PP["PipeWire/PulseAudio<br/>(Desktop Audio)"]
+    MS --> JACK["JACK<br/>(Pro Audio)"]
+    PP --> AH["Audio Hardware<br/>(Speakers/Phones)"]
     JACK --> AH
 ```
 
