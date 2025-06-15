@@ -302,6 +302,18 @@ int synth_unload_soundfont(synth_t *synth, int soundfont_id);
 int synth_get_status(synth_t *synth, synth_status_t *status);
 
 /**
+ * Update runtime-changeable synthesizer settings
+ *
+ * Applies configuration values such as gain or effect levels while the
+ * synthesizer is running.
+ *
+ * @param synth Synthesizer instance
+ * @param new_config Pointer to updated configuration
+ * @return 0 on success, negative on error
+ */
+int synth_update_settings(synth_t *synth, const midisynthd_config_t *new_config);
+
+/**
  * Set polyphony limit (maximum number of simultaneous voices)
  * 
  * @param synth Synthesizer instance

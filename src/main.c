@@ -163,7 +163,22 @@ static void signal_handler(int sig) {
             if (g_config.log_level >= LOG_LEVEL_INFO) {
                 syslog(LOG_INFO, "Received SIGUSR1, printing status information");
             }
-            /* TODO: Print status to log */
+            if (g_synth) {
+                synth_status_t status;
+                if (synth_get_status(g_synth, &status) == 0) {
+                    syslog(LOG_INFO,
+                           "Synth status: voices %d/%d, CPU %.2f%%, %0.f Hz, %d-frame buffer",
+                           status.active_voices,
+                           status.max_polyphony,
+                           status.cpu_load,
+                           status.sample_rate,
+                           status.buffer_size);
+                } else {
+                    syslog(LOG_WARNING, "Unable to retrieve synthesizer status");
+                }
+            } else {
+                syslog(LOG_WARNING, "Synthesizer not initialized; no status available");
+            }
             break;
         case SIGUSR2:
             if (g_config.log_level >= LOG_LEVEL_INFO) {
@@ -449,7 +464,10 @@ static int reload_configuration(void) {
         setlogmask(log_mask);
     }
     
-    /* TODO: Apply runtime-changeable settings to modules */
+    /* Apply runtime-changeable settings to active modules */
+    if (g_synth) {
+        synth_update_settings(g_synth, &g_config);
+    }
     
     syslog(LOG_INFO, "Configuration reloaded successfully");
     config_cleanup(&new_config);
