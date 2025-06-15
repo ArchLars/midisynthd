@@ -221,42 +221,6 @@ reverb_level = 0.9
 
 ## 📖 Advanced Usage
 
-### Command Line Options
-
-```bash
-midisynthd [OPTIONS]
-
-Options:
-  -h, --help              Show help message
-  -v, --version           Show version information
-  -c, --config FILE       Use specific config file
-  -d, --daemonize         Run as daemon (background)
-  -V, --verbose           Enable debug logging
-  -q, --quiet             Reduce log output  
-  -t, --test-config       Test configuration and exit
-  -s, --soundfont SF2     Override default SoundFont
-  -n, --no-realtime       Disable real-time priority
-  -u, --user USER         Run as specified user
-  -g, --group GROUP       Run as specified group
-```
-
-### Examples
-
-Test configuration:
-```bash
-midisynthd --test-config
-```
-
-Run in foreground with debug output:
-```bash
-midisynthd --verbose
-```
-
-Use a different SoundFont temporarily:
-```bash
-midisynthd --soundfont /path/to/CustomGM.sf2
-```
-
 ### Integration with Applications
 
 #### LMMS
