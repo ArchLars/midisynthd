@@ -43,9 +43,14 @@ int config_load_file(midisynthd_config_t *cfg, const char *path) {
     return 0;
 }
 
-int config_validate(midisynthd_config_t *cfg) { 
-    (void)cfg; 
-    return 0; 
+int config_validate(midisynthd_config_t *cfg) {
+    (void)cfg;
+    return 0;
+}
+
+void config_merge(midisynthd_config_t *system_config, const midisynthd_config_t *user_config) {
+    if (!system_config || !user_config) return;
+    *system_config = *user_config;
 }
 
 synth_t* synth_init(const midisynthd_config_t *cfg, audio_t *audio) {
