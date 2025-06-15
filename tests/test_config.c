@@ -3,6 +3,7 @@
 #include <setjmp.h>
 #include <cmocka.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "config.h"
 
@@ -42,10 +43,34 @@ static void test_validation(void **state) {
     assert_int_equal(ret, 0);
 }
 
+static void test_merge_overwrite(void **state) {
+    (void)state;
+    midisynthd_config_t sys_cfg;
+    midisynthd_config_t user_cfg;
+
+    config_init_defaults(&sys_cfg);
+    config_init_defaults(&user_cfg);
+
+    sys_cfg.sample_rate = 22050;
+    strcpy(sys_cfg.client_name, "SystemName");
+    sys_cfg.gain = 0.3f;
+
+    user_cfg.sample_rate = 48000;
+    user_cfg.client_name[0] = '\0';
+    user_cfg.gain = 1.0f;
+
+    config_merge(&sys_cfg, &user_cfg);
+
+    assert_int_equal(sys_cfg.sample_rate, user_cfg.sample_rate);
+    assert_true(sys_cfg.gain - user_cfg.gain < 0.001f);
+    assert_string_equal(sys_cfg.client_name, user_cfg.client_name);
+}
+
 int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_load_precedence),
         cmocka_unit_test(test_validation),
+        cmocka_unit_test(test_merge_overwrite),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

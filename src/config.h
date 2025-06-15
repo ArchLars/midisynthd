@@ -275,10 +275,12 @@ const char* config_audio_driver_to_string(audio_driver_t driver);
 const char* config_midi_driver_to_string(midi_driver_t driver);
 
 /**
- * Merge user configuration into system configuration
- * User settings override system settings where specified
- * @param system_config System configuration (modified in place)
- * @param user_config User configuration to merge
+ * Replace the system configuration with the user configuration.
+ * All fields from @p user_config are copied verbatim to
+ * @p system_config, overwriting any previous values.
+ *
+ * @param system_config Destination configuration (modified in place)
+ * @param user_config Source configuration to copy from
  */
 void config_merge(midisynthd_config_t *system_config, const midisynthd_config_t *user_config);
 
