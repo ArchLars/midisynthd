@@ -72,6 +72,7 @@ typedef enum {
 typedef enum {
     MIDI_DRIVER_ALSA_SEQ = 0,
     MIDI_DRIVER_ALSA_RAW,
+    MIDI_DRIVER_JACK,
     MIDI_DRIVER_COUNT
 } midi_driver_t;
 

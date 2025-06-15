@@ -23,3 +23,19 @@ foreach(testfile ${TEST_SOURCES})
     )
     add_test(NAME ${testname} COMMAND ${testname})
 endforeach()
+
+add_executable(test_midi_jack
+    test_midi_jack.c
+    stubs.c
+    jack_stubs.c
+    ${CMAKE_SOURCE_DIR}/src/midi_jack.c
+)
+target_include_directories(test_midi_jack PRIVATE ${CMAKE_SOURCE_DIR}/src)
+target_link_libraries(test_midi_jack
+    ${FLUIDSYNTH_LIBRARIES}
+    ${MATH_LIBRARIES}
+    ${RT_LIBRARIES}
+    Threads::Threads
+    cmocka
+)
+add_test(NAME test_midi_jack COMMAND test_midi_jack)
