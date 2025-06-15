@@ -35,7 +35,7 @@
 
 ### Why midisynthd?
 
-- **Seamless Integration**: Appears as a standard ALSA MIDI device that any application can use
+- **Seamless Integration**: Appears as a standard MIDI device that any application can use
 - **Automatic Audio Routing**: Intelligently detects and uses JACK, PipeWire, PulseAudio, or ALSA
 - **Zero Configuration**: Works out-of-the-box with sensible defaults
 - **System Service**: Runs automatically at startup via systemd
