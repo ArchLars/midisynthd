@@ -41,6 +41,7 @@
 - **System Service**: Runs automatically at startup via systemd
 - **Low Latency**: Optimized for real-time MIDI playback
 - **General MIDI Compatible**: Full GM instrument set with high-quality SoundFonts
+- **Supports JACK and ALSA-Seq**: Support for JACK and ALSA right out of the box.
 
 
 ## 📦 Installation
