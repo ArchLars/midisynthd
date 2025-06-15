@@ -27,7 +27,7 @@
   </tr>
 </table>
 
-
+---
 
 ## 🎵 Overview
 
@@ -42,7 +42,6 @@
 - **Low Latency**: Optimized for real-time MIDI playback
 - **General MIDI Compatible**: Full GM instrument set with high-quality SoundFonts
 
----
 
 ## 📦 Installation
 
