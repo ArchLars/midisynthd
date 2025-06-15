@@ -42,6 +42,7 @@
 - **Low Latency**: Optimized for real-time MIDI playback
 - **General MIDI Compatible**: Full GM instrument set with high-quality SoundFonts
 
+---
 
 ## 📦 Installation
 
@@ -63,50 +64,7 @@ For Debian/Ubuntu systems, install the build requirements with:
 sudo apt-get install build-essential cmake pkg-config libasound2-dev \
     libfluidsynth-dev libsystemd-dev libcmocka-dev
 ```
- 
-### Project Structure
-```
-midisynthd/
-├── src/              # Source code
-│   ├── main.c       # Entry point
-│   ├── synth.c/h    # FluidSynth wrapper
-│   ├── audio.c/h    # Audio backend management
-│   ├── midi_alsa.c/h # ALSA sequencer interface
-│   └── config.c/h   # Configuration handling
-├── systemd/         # Service unit files
-├── config/          # Default configurations  
-└── tests/           # Unit tests
-```
 
-### Signal Flow
-
-```mermaid
-flowchart TB
-    IS["Input Sources<br/>• MIDI Keyboard (Hardware)<br/>• MIDI Files (aplaymidi)<br/>• Other MIDI Applications (DAWs, Sequencers)"]
-    ALSA["ALSA Sequencer Layer<br/>(Linux MIDI Infrastructure)"]
-    MS["midisynthd"]
-
-    IS --> ALSA --> MS
-
-    subgraph "midisynthd internals"
-        direction LR
-        MC["main.c<br/>- Entry point<br/>- Signal mgmt<br/>- Event loop"]
-        CC["config.c/h<br/>- Load configs<br/>- Validate"]
-        MAC["midi_alsa.c/h<br/>- MIDI input<br/>- ALSA client<br/>- Event routing"]
-        SC["synth.c/h<br/>- FluidSynth<br/>- Note handling<br/>- Soundfont mgmt"]
-        AC["audio.c/h<br/>- Driver detect<br/>- Audio output"]
-
-        MC --- CC
-        MC --- MAC
-        MAC --> SC
-        SC --> AC
-    end
-
-    MS --> PP["PipeWire/PulseAudio<br/>(Desktop Audio)"]
-    MS --> JACK["JACK<br/>(Pro Audio)"]
-    PP --> AH["Audio Hardware<br/>(Speakers/Phones)"]
-    JACK --> AH
-```
 
 #### Build Steps
 
