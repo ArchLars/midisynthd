@@ -300,16 +300,6 @@ cmake .. -DCMAKE_BUILD_TYPE=Debug \
 # Run test suite
 ctest --output-on-failure
 ```
- modern systems
-- **Memory**: 50-150 MB (depending on SoundFont size)
-- **Latency**: 5-20ms (configurable via buffer settings)
-
-## 🔒 Security
-
-- Runs as unprivileged user by default
-- No network connections
-- Minimal system access (audio and MIDI only)
-- Follows principle of least privilege
 
 ## 📄 License
 
