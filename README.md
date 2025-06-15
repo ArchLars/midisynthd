@@ -313,7 +313,7 @@ ctest --output-on-failure
 
 ## 📄 License
 
-This project is licensed under the GNU Lesser General Public License v2.1 - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU Lesser General Public License v2.1 in harmony with ALSA and FluidSynth. - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
