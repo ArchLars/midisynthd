@@ -282,64 +282,12 @@ int synth_set_gain(synth_t *synth, float gain);
  */
 float synth_get_gain(synth_t *synth);
 
-/**
- * Enable or disable chorus effect
- * 
- * @param synth Synthesizer instance
- * @param enabled True to enable chorus, false to disable
- * @return 0 on success, negative on error
- */
-int synth_set_chorus_enabled(synth_t *synth, bool enabled);
-
-/**
- * Set chorus effect parameters
- * 
- * @param synth Synthesizer instance
- * @param level Chorus mix level (0.0-1.0)
- * @param speed Chorus LFO speed in Hz
- * @param depth Chorus modulation depth
- * @return 0 on success, negative on error
- */
-int synth_set_chorus_params(synth_t *synth, float level, float speed, float depth);
-
-/**
- * Enable or disable reverb effect
- * 
- * @param synth Synthesizer instance
- * @param enabled True to enable reverb, false to disable
- * @return 0 on success, negative on error
- */
-int synth_set_reverb_enabled(synth_t *synth, bool enabled);
-
-/**
- * Set reverb effect parameters
- * 
- * @param synth Synthesizer instance
- * @param level Reverb mix level (0.0-1.0)
- * @param room_size Room size parameter (0.0-1.0)
- * @param damping High frequency damping (0.0-1.0)
- * @return 0 on success, negative on error
- */
-int synth_set_reverb_params(synth_t *synth, float level, float room_size, float damping);
-
-/**
- * Load an additional soundfont file
- * 
- * Loads a SoundFont file and makes its presets available for use.
- * Multiple soundfonts can be loaded simultaneously.
- * 
- * @param synth Synthesizer instance
- * @param soundfont_path Path to the SoundFont (.sf2) file
- * @param reset_presets If true, reset all channels to use new soundfont
- * @return Soundfont ID on success, negative on error
- */
-int synth_load_soundfont(synth_t *synth, const char *soundfont_path, bool reset_presets);
 
 /**
  * Unload a previously loaded soundfont
  * 
  * @param synth Synthesizer instance
- * @param soundfont_id ID returned by synth_load_soundfont()
+ * @param soundfont_id Identifier of the soundfont to unload
  * @return 0 on success, negative on error
  */
 int synth_unload_soundfont(synth_t *synth, int soundfont_id);
