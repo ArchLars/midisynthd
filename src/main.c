@@ -212,31 +212,6 @@ static int setup_signals(void) {
     return 0;
 }
 
-/**
- * Get expanded path for user configuration file
- */
-static char* get_user_config_path(void) {
-    const char *home = getenv("HOME");
-    if (!home) {
-        struct passwd *pw = getpwuid(getuid());
-        if (pw) {
-            home = pw->pw_dir;
-        }
-    }
-    
-    if (!home) {
-        return NULL;
-    }
-    
-    size_t path_len = strlen(home) + strlen(CONFIG_USER_PATH) + 1;
-    char *path = malloc(path_len);
-    if (!path) {
-        return NULL;
-    }
-    
-    snprintf(path, path_len, "%s%s", home, CONFIG_USER_PATH);
-    return path;
-}
 
 /**
  * Load configuration from files and apply command line overrides
@@ -244,7 +219,6 @@ static char* get_user_config_path(void) {
 static int load_configuration(const char *config_file, const char *soundfont_override,
                              const char *user_override, const char *group_override,
                              int verbose, int quiet, int no_realtime) {
-    char *user_config_path = NULL;
     int ret = 0;
     
     /* Initialize with default values */
