@@ -371,8 +371,19 @@ static int initialize_modules(void) {
         return -1;
     }
     
-    syslog(LOG_INFO, "Initializing ALSA MIDI input system");
-    g_midi = midi_alsa_init(&g_config, g_synth);
+    syslog(LOG_INFO, "Initializing %s MIDI input system",
+           config_midi_driver_to_string(g_config.midi_driver));
+    switch (g_config.midi_driver) {
+        case MIDI_DRIVER_ALSA_SEQ:
+            g_midi = midi_alsa_init(&g_config, g_synth);
+            break;
+        case MIDI_DRIVER_ALSA_RAW:
+            syslog(LOG_ERR, "MIDI driver 'alsa_raw' not implemented");
+            return -1;
+        default:
+            syslog(LOG_ERR, "Unknown MIDI driver %d", g_config.midi_driver);
+            return -1;
+    }
     if (!g_midi) {
         syslog(LOG_ERR, "Failed to initialize MIDI input system");
         return -1;

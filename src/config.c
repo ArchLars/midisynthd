@@ -157,6 +157,7 @@ void config_init_defaults(midisynthd_config_t *config) {
     
     /* Audio settings */
     config->audio_driver = AUDIO_DRIVER_AUTO;
+    config->midi_driver = MIDI_DRIVER_ALSA_SEQ;
     config->sample_rate = CONFIG_DEFAULT_SAMPLE_RATE;
     config->buffer_size = CONFIG_DEFAULT_BUFFER_SIZE;
     config->audio_periods = CONFIG_DEFAULT_AUDIO_PERIODS;
@@ -238,6 +239,9 @@ static void parse_config_line(midisynthd_config_t *config, const char *line) {
     }
     else if (strcasecmp(trimmed_key, "audio_driver") == 0) {
         config->audio_driver = parse_audio_driver(trimmed_value);
+    }
+    else if (strcasecmp(trimmed_key, "midi_driver") == 0) {
+        config->midi_driver = config_parse_midi_driver(trimmed_value);
     }
     else if (strcasecmp(trimmed_key, "sample_rate") == 0) {
         config->sample_rate = parse_int(trimmed_value, 8000, 192000, CONFIG_DEFAULT_SAMPLE_RATE);
@@ -508,6 +512,7 @@ void config_print(const midisynthd_config_t *config) {
     printf("  Gain:               %.2f\n", config->gain);
     
     printf("\nMIDI:\n");
+    printf("  Driver:             %s\n", config_midi_driver_to_string(config->midi_driver));
     printf("  Client Name:        %s\n", config->client_name);
     printf("  Auto-connect:       %s\n", config->midi_autoconnect ? "yes" : "no");
     
@@ -564,6 +569,7 @@ int config_save(const midisynthd_config_t *config, const char *filename) {
     if (!f) return -1;
     fprintf(f, "log_level=%s\n", config_log_level_to_string(config->log_level));
     fprintf(f, "audio_driver=%s\n", config_audio_driver_to_string(config->audio_driver));
+    fprintf(f, "midi_driver=%s\n", config_midi_driver_to_string(config->midi_driver));
     fprintf(f, "sample_rate=%d\n", config->sample_rate);
     fprintf(f, "buffer_size=%d\n", config->buffer_size);
     fprintf(f, "audio_periods=%d\n", config->audio_periods);

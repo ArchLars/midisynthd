@@ -17,6 +17,7 @@ void config_init_defaults(midisynthd_config_t *cfg) {
     cfg->audio_periods = CONFIG_DEFAULT_AUDIO_PERIODS;
     cfg->polyphony = CONFIG_DEFAULT_POLYPHONY;
     cfg->audio_driver = AUDIO_DRIVER_AUTO;
+    cfg->midi_driver = MIDI_DRIVER_ALSA_SEQ;
     cfg->log_level = LOG_LEVEL_INFO;
     cfg->midi_autoconnect = true;
     cfg->chorus_enabled = true;

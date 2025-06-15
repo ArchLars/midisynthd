@@ -134,6 +134,7 @@ typedef struct {
 typedef struct midisynthd_config_t {
     log_level_t log_level;
     audio_driver_t audio_driver;
+    midi_driver_t midi_driver;
     int sample_rate;
     int buffer_size;
     int audio_periods;
