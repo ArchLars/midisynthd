@@ -553,6 +553,59 @@ int synth_key_pressure(synth_t *synth, int channel, int key, int pressure) {
 }
 
 /**
+ * Parse and process a raw MIDI message
+ */
+int synth_process_midi_data(synth_t *synth, const uint8_t *data, size_t length) {
+    if (!synth || !data || length == 0) {
+        return -1;
+    }
+
+    uint8_t status = data[0];
+
+    if (status < 0x80) {
+        /* Running status or invalid message not supported */
+        return -1;
+    }
+
+    uint8_t channel = status & 0x0F;
+    uint8_t type = status & 0xF0;
+
+    switch (type) {
+        case MIDI_NOTE_ON:
+            if (length < 3) return -1;
+            if (data[2] == 0) {
+                return synth_note_off(synth, channel, data[1], 0);
+            }
+            return synth_note_on(synth, channel, data[1], data[2]);
+        case MIDI_NOTE_OFF:
+            if (length < 3) return -1;
+            return synth_note_off(synth, channel, data[1], data[2]);
+        case MIDI_KEY_PRESSURE:
+            if (length < 3) return -1;
+            return synth_key_pressure(synth, channel, data[1], data[2]);
+        case MIDI_CONTROL_CHANGE:
+            if (length < 3) return -1;
+            return synth_control_change(synth, channel, data[1], data[2]);
+        case MIDI_PROGRAM_CHANGE:
+            if (length < 2) return -1;
+            return synth_program_change(synth, channel, data[1]);
+        case MIDI_CHANNEL_PRESSURE:
+            if (length < 2) return -1;
+            return synth_channel_pressure(synth, channel, data[1]);
+        case MIDI_PITCH_BEND:
+            if (length < 3) return -1;
+            {
+                int bend = data[1] | (data[2] << 7);
+                return synth_pitch_bend(synth, channel, bend);
+            }
+        default:
+            break;
+    }
+
+    return -1;
+}
+
+/**
  * Send an All Sound Off MIDI event to the synthesizer
  */
 int synth_all_sound_off(synth_t *synth, int channel) {
