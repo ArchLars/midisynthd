@@ -114,16 +114,6 @@ audio_t* audio_init(const midisynthd_config_t *config);
  */
 void audio_cleanup(audio_t *audio);
 
-/**
- * Detect available audio drivers on the system
- * 
- * Probes the system to determine which audio drivers are available
- * and their current status.
- * 
- * @param drivers Array to fill with driver info (size AUDIO_DRIVER_COUNT)
- * @return Number of available drivers found
- */
-int audio_detect_drivers(audio_driver_info_t drivers[AUDIO_DRIVER_COUNT]);
 
 /**
  * Get the automatically selected audio driver
@@ -139,14 +129,6 @@ int audio_detect_drivers(audio_driver_info_t drivers[AUDIO_DRIVER_COUNT]);
  */
 audio_driver_t audio_detect_best_driver(void);
 
-/**
- * Get current audio system statistics
- * 
- * @param audio Audio context
- * @param stats Structure to fill with current statistics
- * @return 0 on success, -1 on error
- */
-int audio_get_stats(const audio_t *audio, audio_stats_t *stats);
 
 /**
  * Retrieve the FluidSynth settings instance used by the audio system
@@ -174,56 +156,7 @@ const char *audio_get_driver_name(audio_t *audio);
  */
 bool audio_is_initialized(audio_t *audio);
 
-/**
- * Set audio gain/volume
- * 
- * @param audio Audio context
- * @param gain Gain value (0.0 to 2.0, where 1.0 is unity gain)
- * @return 0 on success, -1 on error
- */
-int audio_set_gain(audio_t *audio, float gain);
 
-/**
- * Get current audio gain/volume
- * 
- * @param audio Audio context
- * @return Current gain value or -1.0 on error
- */
-float audio_get_gain(const audio_t *audio);
-
-/**
- * Check if audio driver supports a specific feature
- * 
- * @param driver Audio driver type
- * @param feature Feature name (e.g., "realtime", "duplex", "exclusive")
- * @return true if feature is supported, false otherwise
- */
-bool audio_driver_supports_feature(audio_driver_t driver, const char *feature);
-
-/**
- * Get human-readable driver status message
- * 
- * @param audio Audio context
- * @return Status string (e.g., "JACK running, 48kHz, 128 frames")
- */
-const char* audio_get_status_string(const audio_t *audio);
-
-/**
- * Validate audio configuration parameters
- * 
- * Checks if the given audio parameters are valid and supported
- * by the specified driver.
- * 
- * @param driver Audio driver type
- * @param sample_rate Requested sample rate
- * @param buffer_size Requested buffer size
- * @param channels Number of channels
- * @return 0 if valid, negative error code otherwise
- */
-int audio_validate_config(audio_driver_t driver, 
-                         uint32_t sample_rate,
-                         uint16_t buffer_size,
-                         uint8_t channels);
 
 /**
  * Error codes for audio subsystem
