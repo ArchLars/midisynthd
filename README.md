@@ -233,6 +233,15 @@ Force a specific driver:
 audio_driver = pipewire
 ```
 
+### MIDI Driver Selection
+
+Currently only the ALSA sequencer backend is implemented. The default is
+`alsa_seq`. Future versions may support raw ALSA devices.
+
+```ini
+midi_driver = alsa_seq
+```
+
 ### Audio Effects
 
 midisynthd exposes simple controls for its built‑in effects.

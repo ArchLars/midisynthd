@@ -3,4 +3,5 @@
 #gain=1.0
 #polyphony=512
 #audio_driver=pipewire
+#midi_driver=alsa_seq
 #midi_autoconnect=yes
