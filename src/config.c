@@ -45,7 +45,8 @@ const char *audio_driver_names[AUDIO_DRIVER_COUNT] = {
 /* MIDI driver names array */
 const char *midi_driver_names[MIDI_DRIVER_COUNT] = {
     "alsa_seq",
-    "alsa_raw"
+    "alsa_raw",
+    "jack"
 };
 
 /**
@@ -649,6 +650,7 @@ audio_driver_t config_parse_audio_driver(const char *driver_str) {
 midi_driver_t config_parse_midi_driver(const char *driver_str) {
     if (!driver_str) return MIDI_DRIVER_ALSA_SEQ;
     if (strcasecmp(driver_str, "alsa_raw") == 0) return MIDI_DRIVER_ALSA_RAW;
+    if (strcasecmp(driver_str, "jack") == 0) return MIDI_DRIVER_JACK;
     return MIDI_DRIVER_ALSA_SEQ;
 }
 

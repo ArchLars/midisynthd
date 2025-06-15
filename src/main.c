@@ -37,6 +37,7 @@
 #include "config.h"
 #include "synth.h"
 #include "midi_alsa.h"
+#include "midi_jack.h"
 #include "audio.h"
 #include "daemonize.h"
 
@@ -53,7 +54,7 @@ static volatile sig_atomic_t g_running = 1;
 static volatile sig_atomic_t g_reload_config = 0;
 static midisynthd_config_t g_config;
 static synth_t *g_synth = NULL;
-static midi_alsa_t *g_midi = NULL;
+static void *g_midi = NULL;
 static audio_t *g_audio = NULL;
 
 /* Command line options */
@@ -169,7 +170,10 @@ static void signal_handler(int sig) {
                 syslog(LOG_INFO, "Received SIGUSR2, sending All Notes Off");
             }
             if (g_midi) {
-                midi_alsa_disconnect_all(g_midi);
+                if (g_config.midi_driver == MIDI_DRIVER_JACK)
+                    midi_jack_disconnect_all(g_midi);
+                else
+                    midi_alsa_disconnect_all(g_midi);
             } else if (g_synth) {
                 synth_all_notes_off(g_synth);
             }
@@ -380,6 +384,9 @@ static int initialize_modules(void) {
         case MIDI_DRIVER_ALSA_RAW:
             syslog(LOG_ERR, "MIDI driver 'alsa_raw' not implemented");
             return -1;
+        case MIDI_DRIVER_JACK:
+            g_midi = midi_jack_init(&g_config, g_synth);
+            break;
         default:
             syslog(LOG_ERR, "Unknown MIDI driver %d", g_config.midi_driver);
             return -1;
@@ -402,7 +409,10 @@ static void cleanup_modules(void) {
     }
     
     if (g_midi) {
-        midi_alsa_cleanup(g_midi);
+        if (g_config.midi_driver == MIDI_DRIVER_JACK)
+            midi_jack_cleanup(g_midi);
+        else
+            midi_alsa_cleanup(g_midi);
         g_midi = NULL;
     }
     
@@ -497,7 +507,12 @@ static int main_loop(void) {
         }
         
         /* Process MIDI events */
-        if (midi_alsa_process_events(g_midi, 100) < 0) {
+        int ret = 0;
+        if (g_config.midi_driver == MIDI_DRIVER_JACK)
+            ret = midi_jack_process_events(g_midi, 100);
+        else
+            ret = midi_alsa_process_events(g_midi, 100);
+        if (ret < 0) {
             syslog(LOG_ERR, "Critical error processing MIDI events");
             break;
         }

@@ -235,11 +235,12 @@ audio_driver = pipewire
 
 ### MIDI Driver Selection
 
-Currently only the ALSA sequencer backend is implemented. The default is
-`alsa_seq`. Future versions may support raw ALSA devices.
+Two MIDI input backends are available: the ALSA sequencer (`alsa_seq`) and JACK
+(`jack`). The default remains `alsa_seq`.
 
 ```ini
 midi_driver = alsa_seq
+;midi_driver = jack
 ```
 
 ### Audio Effects
