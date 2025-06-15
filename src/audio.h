@@ -38,60 +38,6 @@ typedef struct audio_s audio_t;
 
 /* Audio driver type comes from config.h */
 
-/**
- * Audio buffer size presets for different use cases
- */
-typedef enum {
-    AUDIO_BUFFER_SIZE_ULTRA_LOW = 32,    /* Ultra-low latency (gaming, live performance) */
-    AUDIO_BUFFER_SIZE_LOW = 64,          /* Low latency (interactive use) */
-    AUDIO_BUFFER_SIZE_NORMAL = 128,      /* Normal latency (general use) */
-    AUDIO_BUFFER_SIZE_HIGH = 256,        /* High latency (less CPU usage) */
-    AUDIO_BUFFER_SIZE_ULTRA_HIGH = 512   /* Ultra-high latency (very low CPU) */
-} audio_buffer_size_t;
-
-/**
- * Audio sample rate constants
- */
-typedef enum {
-    AUDIO_SAMPLE_RATE_22050 = 22050,
-    AUDIO_SAMPLE_RATE_44100 = 44100,
-    AUDIO_SAMPLE_RATE_48000 = 48000,    /* Recommended default */
-    AUDIO_SAMPLE_RATE_88200 = 88200,
-    AUDIO_SAMPLE_RATE_96000 = 96000
-} audio_sample_rate_t;
-
-/**
- * Audio format constants
- */
-typedef enum {
-    AUDIO_FORMAT_16BIT = 16,
-    AUDIO_FORMAT_24BIT = 24,
-    AUDIO_FORMAT_32BIT = 32              /* Float format */
-} audio_format_t;
-
-/**
- * Audio driver capabilities and status
- */
-typedef struct {
-    bool available;                      /* Driver is available on system */
-    bool active;                         /* Driver is currently running */
-    bool realtime_capable;               /* Supports real-time operation */
-    const char *description;             /* Human-readable description */
-    const char *version;                 /* Driver version if available */
-} audio_driver_info_t;
-
-/**
- * Audio system runtime statistics
- */
-typedef struct {
-    uint32_t sample_rate;                /* Current sample rate */
-    uint16_t buffer_size;                /* Current buffer size in frames */
-    uint8_t channels;                    /* Number of audio channels */
-    uint8_t format_bits;                 /* Audio format bit depth */
-    float cpu_load;                      /* CPU load percentage (0.0-100.0) */
-    uint64_t xruns;                      /* Number of audio dropouts */
-    bool realtime_active;                /* Real-time scheduling active */
-} audio_stats_t;
 
 /**
  * Initialize audio subsystem

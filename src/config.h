@@ -88,48 +88,6 @@ typedef struct {
     float gain_offset;
 } soundfont_config_t;
 
-/* Audio configuration */
-typedef struct {
-    audio_driver_t driver;
-    char device[CONFIG_MAX_STRING_LEN];
-    int sample_rate;
-    int buffer_size;
-    int buffer_count;
-    bool realtime_priority;
-    int priority_level;
-} audio_config_t;
-
-/* MIDI configuration */
-typedef struct {
-    midi_driver_t driver;
-    char device[CONFIG_MAX_STRING_LEN];
-    bool autoconnect;
-    bool announce;
-    char client_name[CONFIG_MAX_STRING_LEN];
-    int client_id;
-} midi_config_t;
-
-/* Synthesis engine configuration */
-typedef struct {
-    int polyphony;
-    float gain;
-    bool interpolation;
-    
-    /* Chorus settings */
-    bool chorus_enabled;
-    int chorus_voices;
-    float chorus_level;
-    float chorus_speed;
-    float chorus_depth;
-    int chorus_type;
-    
-    /* Reverb settings */
-    bool reverb_enabled;
-    float reverb_level;
-    float reverb_roomsize;
-    float reverb_damping;
-    float reverb_width;
-} synth_config_t;
 
 /* Main configuration structure used by config.c */
 typedef struct midisynthd_config_t {
