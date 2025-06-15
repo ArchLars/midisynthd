@@ -304,6 +304,7 @@ ctest --output-on-failure
 ## 📄 License
 
 This project is licensed under the GNU Lesser General Public License v2.1 in harmony with ALSA and FluidSynth. 
+
 See the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
@@ -315,7 +316,9 @@ See the [LICENSE](LICENSE) file for details.
 
 ## Notes
 
-I wrote this for myself and cleaned it up for publication with AI. That's partly why I made a decision on the soundfont side of things. You can always compile it without that if you'd like. I decided to release this publicly because maybe someone would get some use out of it? I cannot guarantee it will ALWAYS work. It should, but mileage may wary. ALSA is the most stable default. 
+I wrote this for myself and cleaned it up for publication with AI. That's partly why I made a decision on the soundfont side of things. You can always compile it without that if you'd like. 
+
+I decided to release this publicly because maybe someone would get some use out of it? I cannot guarantee it will ALWAYS work. It should, but mileage may wary. ALSA is the most stable default. 
 
 ## 🔗 Links
 
